@@ -1,5 +1,6 @@
 package com.appstack.wishlist.domain.model;
 
+import com.appstack.wishlist.domain.enums.PrivacyStatusEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -22,9 +23,16 @@ public class Wishlist {
     private String id;
     @Field(targetType = FieldType.OBJECT_ID)
     private String userId;
+    private String listName;
+    private PrivacyStatusEnum privacyStatus;
     private List<Item> items;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public Wishlist(String userId, List<Item> items) {
+        this.userId = userId;
+        this.items = items;
+    }
 }
