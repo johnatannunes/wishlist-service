@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +19,7 @@ public class ViewWishlistUseCase {
     public List<WishlistResponse> execute(String customerId) {
         return wishlistService.getAllWishlistsByCustomerId(customerId)
                 .map(wishlists -> wishlists.stream()
-                        .map(wishlistMapper::toWishlistResponse)
-                        .collect(Collectors.toList()))
-                .orElse(Collections.emptyList());
+                        .map(wishlistMapper::toResponse)
+                        .toList()).orElse(Collections.emptyList());
     }
 }

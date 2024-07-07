@@ -6,8 +6,6 @@ import com.appstack.wishlist.domain.service.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class ViewSingleWishlistUseCase {
@@ -17,6 +15,6 @@ public class ViewSingleWishlistUseCase {
 
     public WishlistResponse execute(String id) {
         return wishlistService.getWishlistById(id)
-                .map(wishlistMapper::toWishlistResponse).orElse(null);
+                .map(wishlistMapper::toResponse).orElse(null);
     }
 }

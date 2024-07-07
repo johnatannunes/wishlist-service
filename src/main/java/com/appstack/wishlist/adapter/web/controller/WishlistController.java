@@ -1,5 +1,6 @@
 package com.appstack.wishlist.adapter.web.controller;
 
+import com.appstack.wishlist.adapter.web.controller.dto.ProductRequest;
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistRequest;
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistResponse;
 import com.appstack.wishlist.application.usecase.*;
@@ -46,19 +47,19 @@ public class WishlistController {
             @ApiResponse(responseCode = "404", description = "Wishlist not found")
     })
     public ResponseEntity<WishlistResponse> addItemToWishlist(@PathVariable String wishlistId,
-                                                              @RequestBody @Valid Product product) {
+                                                              @RequestBody @Valid ProductRequest product) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(addItemToWishlistUseCase.execute(wishlistId, product));
     }
 
-    @DeleteMapping("/{customerId}/products/{productId}")
+    @DeleteMapping("/{wishlistId}/products/{productId}")
     @Operation(summary = "Remove Item from Wishlist", description = "Remove an item from a user's wishlist")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Item removed successfully"),
             @ApiResponse(responseCode = "404", description = "Wishlist or item not found")
     })
-    public ResponseEntity<Void> removeItemFromWishlist(@PathVariable String customerId, @PathVariable String productId) {
-        removeItemFromWishlistUseCase.execute(customerId, productId);
+    public ResponseEntity<Void> removeItemFromWishlist(@PathVariable String wishlistId, @PathVariable String productId) {
+        removeItemFromWishlistUseCase.execute(wishlistId, productId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

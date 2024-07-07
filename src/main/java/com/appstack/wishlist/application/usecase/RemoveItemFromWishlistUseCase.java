@@ -10,7 +10,7 @@ public class RemoveItemFromWishlistUseCase {
 
     private final WishlistService wishlistService;
 
-    public void execute(String customerId, String itemId) {
-        wishlistService.removeItemFromWishlist(customerId, itemId);
+    public void execute(String wishlistId, String productId) {
+        wishlistService.removeProductFromWishlist(wishlistId, productId);
     }
 }

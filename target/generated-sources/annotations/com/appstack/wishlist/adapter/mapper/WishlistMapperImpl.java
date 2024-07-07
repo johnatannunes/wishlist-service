@@ -14,14 +14,14 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-07T01:32:59-0300",
+    date = "2024-07-07T06:27:30-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Amazon.com Inc.)"
 )
 @Component
 public class WishlistMapperImpl implements WishlistMapper {
 
     @Override
-    public WishlistResponse toWishlistResponse(Wishlist wishlist) {
+    public WishlistResponse toResponse(Wishlist wishlist) {
         if ( wishlist == null ) {
             return null;
         }
@@ -48,7 +48,7 @@ public class WishlistMapperImpl implements WishlistMapper {
     }
 
     @Override
-    public Wishlist fromWishlistRequest(WishlistRequest request) {
+    public Wishlist toDomain(WishlistRequest request) {
         if ( request == null ) {
             return null;
         }
@@ -68,12 +68,10 @@ public class WishlistMapperImpl implements WishlistMapper {
         }
 
         String productId = null;
-        Integer quantity = null;
 
         productId = product.getProductId();
-        quantity = product.getQuantity();
 
-        ProductRequest productRequest = new ProductRequest( productId, quantity );
+        ProductRequest productRequest = new ProductRequest( productId );
 
         return productRequest;
     }

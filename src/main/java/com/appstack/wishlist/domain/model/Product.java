@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 @Data
 @AllArgsConstructor
 public class Product {
-    @Field(targetType = FieldType.OBJECT_ID)
+    @Field(targetType = FieldType.STRING)
     private String productId;
-    private String name;
 }

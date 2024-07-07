@@ -7,6 +7,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface WishlistMapper {
-    WishlistResponse toWishlistResponse(Wishlist wishlist);
-    Wishlist fromWishlistRequest(WishlistRequest request);
+    WishlistResponse toResponse(Wishlist wishlist);
+    Wishlist toDomain(WishlistRequest request);
 }

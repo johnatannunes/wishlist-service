@@ -10,6 +10,6 @@ public interface WishlistService {
     Wishlist createWishlist(Wishlist wishlist);
     Optional<List<Wishlist>> getAllWishlistsByCustomerId(String customerId);
     Optional<Wishlist> getWishlistById(String wishlistId);
-    Wishlist addItemToWishlist(String wishlistId, Product product);
-    void removeItemFromWishlist(String customerId, String productId);
+    Wishlist addProductToWishlist(String wishlistId, Product product);
+    void removeProductFromWishlist(String customerId, String productId);
 }

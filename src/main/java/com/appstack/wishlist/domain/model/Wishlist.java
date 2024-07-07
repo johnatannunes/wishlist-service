@@ -21,7 +21,7 @@ import java.util.List;
 public class Wishlist {
     @Id
     private String id;
-    @Field(targetType = FieldType.OBJECT_ID)
+    @Field(targetType = FieldType.STRING)
     private String customerId;
     private String listName;
     private PrivacyStatusEnum privacyStatus;
