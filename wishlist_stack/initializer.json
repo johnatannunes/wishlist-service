@@ -1,0 +1,275 @@
+[
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/products"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": [
+        {
+          "id": "668a3c139c5b9977c005c180",
+          "description": "Samsung Galaxy Book4 Intel® Core™ i3-1315U, Windows 11 Home, 8GB, 256GB SSD, UHD Graphics, 15.6'' Full HD LED, 1.55kg*",
+          "price": 2999.99,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c181",
+          "description": "Apple iPhone 14 Pro Max 128GB - Roxo",
+          "price": 6799.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c182",
+          "description": "Sony WH-1000XM5 Headphones com Cancelamento de Ruído",
+          "price": 1599.90,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c183",
+          "description": "Dell XPS 13 Plus 9320 - Intel® Core™ i7-1260P, 16GB RAM, 512GB SSD",
+          "price": 5499.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c184",
+          "description": "Google Pixel 7 Pro 128GB - Preto",
+          "price": 4999.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c185",
+          "description": "Acer Aspire 5 A515-56-73AP - Intel® Core™ i7-1165G7, 8GB RAM, 256GB SSD",
+          "price": 2999.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c186",
+          "description": "Xbox Series X 1TB",
+          "price": 4999.99,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c187",
+          "description": "PlayStation 5 Console Digital Edition",
+          "price": 4399.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c188",
+          "description": "Nintendo Switch OLED Model - Branco",
+          "price": 3599.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c189",
+          "description": "Kindle Paperwhite 11ª Geração 8GB - Preto",
+          "price": 699.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c18a",
+          "description": "JBL Charge 5 - Caixa de Som Bluetooth à Prova d'Água",
+          "price": 899.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c18b",
+          "description": "Samsung Galaxy Tab S8 Ultra - 12.4\" - 128GB - Wi-Fi",
+          "price": 2999.99,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c18c",
+          "description": "HP Spectre x360 14-ea0013dx - Intel® Core™ i7-1165G7, 16GB RAM, 1TB SSD",
+          "price": 6799.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c18d",
+          "description": "Lenovo IdeaPad 3 15ADA6 - AMD Ryzen 5 5500U, 8GB RAM, 512GB SSD",
+          "price": 2799.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c18e",
+          "description": "Razer BlackWidow V3 - Teclado Mecânico RGB",
+          "price": 799.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c18f",
+          "description": "Corsair Vengeance LPX 16GB (2x8GB) DDR4 3200MHz",
+          "price": 499.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c190",
+          "description": "Seagate Barracuda 2TB HDD 7200RPM",
+          "price": 379.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c191",
+          "description": "ASUS ROG Strix GeForce RTX 4080 16GB",
+          "price": 4999.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c192",
+          "description": "Dell UltraSharp U2720Q 27\" 4K Monitor",
+          "price": 1999.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c193",
+          "description": "Logitech MX Master 3S - Mouse para Produtividade",
+          "price": 599.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c194",
+          "description": "Microsoft Surface Laptop 4 - Intel® Core™ i5-1135G7, 8GB RAM, 256GB SSD",
+          "price": 3999.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c195",
+          "description": "Anker PowerCore 20100mAh Power Bank",
+          "price": 179.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c196",
+          "description": "Xiaomi Mi Band 7 - Pulseira de Atividade Física",
+          "price": 299.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c197",
+          "description": "Apple AirPods Pro 2ª Geração",
+          "price": 1399.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c198",
+          "description": "Google Nest Hub 2ª Geração",
+          "price": 499.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c199",
+          "description": "Philips Hue White and Color Ambiance Starter Kit",
+          "price": 899.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c19a",
+          "description": "Sony Alpha 7 IV - Câmera Mirrorless Full-Frame",
+          "price": 11999.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c19b",
+          "description": "GoPro HERO12 Black - Câmera de Ação",
+          "price": 3499.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c19c",
+          "description": "Bose QuietComfort 45 - Headphones com Cancelamento de Ruído",
+          "price": 1799.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3c139c5b9977c005c19d",
+          "description": "Canon EOS R6 - Câmera Mirrorless Full-Frame",
+          "price": 9999.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3cd79c5b9977c005c310",
+          "description": "Razer Naga X - Mouse Gamer com 16 Botões",
+          "price": 449.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3cd79c5b9977c005c304",
+          "description": "Apple Watch Series 8 GPS 45mm - Prata",
+          "price": 2399.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3cd79c5b9977c005c305",
+          "description": "Lenovo ThinkPad X1 Carbon Gen 10 - Intel® Core™ i7-12800H, 16GB RAM, 512GB SSD",
+          "price": 7999.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3cd79c5b9977c005c306",
+          "description": "Samsung 980 PRO 1TB M.2 NVMe SSD",
+          "price": 699.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3cd79c5b9977c005c307",
+          "description": "Corsair iCUE H100i Elite Capellix - Cooler Líquido 240mm",
+          "price": 849.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3cd79c5b9977c005c308",
+          "description": "ASUS TUF Gaming VG27AQ1A 27\" 2K Monitor com 165Hz",
+          "price": 1399.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3cd79c5b9977c005c309",
+          "description": "Seagate Expansion 4TB HD USB 3.0",
+          "price": 499.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3cd79c5b9977c005c30a",
+          "description": "Jabra Elite 85h - Headphones Bluetooth com Cancelamento de Ruído",
+          "price": 1299.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3cd79c5b9977c005c30b",
+          "description": "LG UltraWide 34WN80C-B 34\" Monitor Curvo QHD",
+          "price": 2199.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3cd79c5b9977c005c30c",
+          "description": "TP-Link Deco X60 - Kit de Roteador Mesh Wi-Fi 6",
+          "price": 1199.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3cd79c5b9977c005c30d",
+          "description": "Microsoft Xbox Elite Series 2 Wireless Controller",
+          "price": 849.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3cd79c5b9977c005c30e",
+          "description": "Netgear Nighthawk AX12 - Roteador Wi-Fi 6",
+          "price": 1999.00,
+          "observation": "Produto em estoque"
+        },
+        {
+          "id": "668a3cd79c5b9977c005c30f",
+          "description": "Xiaomi 11T Pro 5G - 256GB - Preto",
+          "price": 3999.00,
+          "observation": "Produto em estoque"
+        }
+      ]
+    ,
+      "headers": {
+        "Content-Type": ["application/json"]
+      }
+    }
+  }
+]
