@@ -1,6 +1,6 @@
 package com.appstack.wishlist.adapter.mapper;
 
-import com.appstack.wishlist.adapter.web.controller.dto.ItemRequest;
+import com.appstack.wishlist.adapter.web.controller.dto.ProductRequest;
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistRequest;
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistResponse;
 import com.appstack.wishlist.domain.enums.PrivacyStatusEnum;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-06T21:23:32-0300",
+    date = "2024-07-07T01:32:59-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Amazon.com Inc.)"
 )
 @Component
@@ -30,7 +30,7 @@ public class WishlistMapperImpl implements WishlistMapper {
         String customerId = null;
         String listName = null;
         PrivacyStatusEnum privacyStatus = null;
-        List<ItemRequest> products = null;
+        List<ProductRequest> products = null;
         LocalDateTime createdAt = null;
         LocalDateTime updatedAt = null;
 
@@ -38,7 +38,7 @@ public class WishlistMapperImpl implements WishlistMapper {
         customerId = wishlist.getCustomerId();
         listName = wishlist.getListName();
         privacyStatus = wishlist.getPrivacyStatus();
-        products = itemListToItemRequestList( wishlist.getProducts() );
+        products = productListToProductRequestList( wishlist.getProducts() );
         createdAt = wishlist.getCreatedAt();
         updatedAt = wishlist.getUpdatedAt();
 
@@ -62,32 +62,30 @@ public class WishlistMapperImpl implements WishlistMapper {
         return wishlist;
     }
 
-    protected ItemRequest itemToItemRequest(Product product) {
+    protected ProductRequest productToProductRequest(Product product) {
         if ( product == null ) {
             return null;
         }
 
         String productId = null;
-        String productName = null;
         Integer quantity = null;
 
         productId = product.getProductId();
-        productName = product.getProductName();
         quantity = product.getQuantity();
 
-        ItemRequest itemRequest = new ItemRequest( productId, productName, quantity );
+        ProductRequest productRequest = new ProductRequest( productId, quantity );
 
-        return itemRequest;
+        return productRequest;
     }
 
-    protected List<ItemRequest> itemListToItemRequestList(List<Product> list) {
+    protected List<ProductRequest> productListToProductRequestList(List<Product> list) {
         if ( list == null ) {
             return null;
         }
 
-        List<ItemRequest> list1 = new ArrayList<ItemRequest>( list.size() );
+        List<ProductRequest> list1 = new ArrayList<ProductRequest>( list.size() );
         for ( Product product : list ) {
-            list1.add( itemToItemRequest(product) );
+            list1.add( productToProductRequest( product ) );
         }
 
         return list1;

@@ -9,7 +9,7 @@ public record WishlistResponse(String id,
                                String customerId,
                                String listName,
                                PrivacyStatusEnum privacyStatus,
-                               List<ItemRequest> products,
+                               List<ProductRequest> products,
                                LocalDateTime createdAt,
                                LocalDateTime updatedAt) {
 }

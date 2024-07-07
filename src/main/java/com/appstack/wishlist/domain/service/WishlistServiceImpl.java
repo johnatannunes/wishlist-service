@@ -13,6 +13,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -20,7 +21,7 @@ import java.util.Optional;
 public class WishlistServiceImpl implements WishlistService {
 
     private static final Logger logger = LoggerFactory.getLogger(WishlistServiceImpl.class);
-
+    private static final int MAXIMUM_QUANTITY_OF_PRODUCTS_ALLOWED = 20;
     private final WishlistRepository wishlistRepository;
 
     @Override
@@ -39,23 +40,47 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public Wishlist addItemToWishlist(String wishlistId, Product product) {
-        var wishlistData = wishlistRepository.findById(wishlistId);
-        var wishlist = wishlistData.orElseThrow(() -> new WishlistNotFoundException(wishlistId));
-
-        if (ObjectUtils.isEmpty(wishlist.getProducts())) {
-            wishlist.setProducts(List.of(product));
-            return wishlistRepository.save(wishlist);
-        }
-
-        if (wishlist.getProducts().size() < 20) {
-            wishlist.getProducts().add(product);
-            return wishlistRepository.save(wishlist);
-        }else{
-            throw new PreconditionFailedException("Wishlist cannot have more than 20 products");
-        }
+        Wishlist wishlist = findWishlistById(wishlistId);
+        addProductToWishlist(wishlist, product);
+        return wishlistRepository.save(wishlist);
     }
 
     @Override
     public void removeItemFromWishlist(String customerId, String itemId) {
+    }
+
+    private Wishlist findWishlistById(String wishlistId) {
+        return wishlistRepository.findById(wishlistId)
+                .orElseThrow(() -> new WishlistNotFoundException(wishlistId));
+    }
+
+    private void addProductToWishlist(Wishlist wishlist, Product product) {
+        initializeProductListIfEmpty(wishlist);
+        checkIfTheProductAlreadyExistsOnTheWishlist(wishlist, product);
+        checkProductLimitInWishlist(wishlist);
+        wishlist.getProducts().add(product);
+    }
+
+    private void initializeProductListIfEmpty(Wishlist wishlist) {
+        if (ObjectUtils.isEmpty(wishlist.getProducts())) {
+            wishlist.setProducts(new ArrayList<>());
+        }
+    }
+
+    private void checkProductLimitInWishlist(Wishlist wishlist) {
+        if (Objects.equals(wishlist.getProducts().size(), MAXIMUM_QUANTITY_OF_PRODUCTS_ALLOWED)) {
+            throw new PreconditionFailedException("Wishlist cannot have more than 20 products");
+        }
+    }
+
+    private void checkIfTheProductAlreadyExistsOnTheWishlist(Wishlist wishlist, Product product) {
+        boolean productExists = wishlist.getProducts()
+                .stream()
+                .anyMatch(productInList
+                        -> Objects.equals(product.getProductId(), productInList.getProductId()));
+
+        if (productExists) {
+            throw new PreconditionFailedException("Product already exists in wish list");
+        }
     }
 }
