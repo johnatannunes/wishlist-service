@@ -6,7 +6,6 @@ import com.appstack.wishlist.domain.service.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -18,8 +17,8 @@ public class ViewWishlistUseCase {
 
     public List<WishlistResponse> execute(String customerId) {
         return wishlistService.getAllWishlistsByCustomerId(customerId)
-                .map(wishlists -> wishlists.stream()
-                        .map(wishlistMapper::toResponse)
-                        .toList()).orElse(Collections.emptyList());
+                .stream()
+                .map(wishlistMapper::toResponse)
+                .toList();
     }
 }

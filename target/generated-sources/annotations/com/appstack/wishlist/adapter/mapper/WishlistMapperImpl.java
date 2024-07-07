@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-07T06:27:30-0300",
+    date = "2024-07-07T19:09:11-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Amazon.com Inc.)"
 )
 @Component
@@ -67,11 +67,11 @@ public class WishlistMapperImpl implements WishlistMapper {
             return null;
         }
 
-        String productId = null;
+        String id = null;
 
-        productId = product.getProductId();
+        id = product.getId();
 
-        ProductRequest productRequest = new ProductRequest( productId );
+        ProductRequest productRequest = new ProductRequest( id );
 
         return productRequest;
     }

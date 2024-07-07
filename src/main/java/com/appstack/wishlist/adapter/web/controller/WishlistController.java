@@ -29,10 +29,12 @@ public class WishlistController {
     private final ViewSingleWishlistUseCase viewSingleWishlistUseCase;
 
     @PostMapping
-    @Operation(summary = "Creation Wishlist", description = "Creation wishlist")
+    @Operation(summary = "Create a new wishlist", description = "Creates a new wishlist for a customer.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "product added successfully"),
-            @ApiResponse(responseCode = "404", description = "Wishlist not found")
+            @ApiResponse(responseCode = "201", description = "Wishlist created successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = WishlistResponse.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
     public ResponseEntity<WishlistResponse> createWishlist(@RequestBody @Valid WishlistRequest wishlistRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -40,9 +42,12 @@ public class WishlistController {
     }
 
     @PostMapping("/{wishlistId}/products")
-    @Operation(summary = "Add product to Wishlist", description = "Add an product to a customer's wishlist")
+    @Operation(summary = "Add a product to a wishlist", description = "Adds a product to an existing wishlist.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "product added successfully"),
+            @ApiResponse(responseCode = "200", description = "Product added successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = WishlistResponse.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid product data or wishlist ID"),
             @ApiResponse(responseCode = "404", description = "Wishlist not found")
     })
     public ResponseEntity<WishlistResponse> addProductToWishlist(@PathVariable String wishlistId,
@@ -52,9 +57,9 @@ public class WishlistController {
     }
 
     @DeleteMapping("/{wishlistId}/products/{productId}")
-    @Operation(summary = "Remove product from Wishlist", description = "Remove an product from a customer's wishlist")
+    @Operation(summary = "Remove a product from a wishlist", description = "Removes a product from an existing wishlist.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "product removed successfully"),
+            @ApiResponse(responseCode = "204", description = "Product removed successfully"),
             @ApiResponse(responseCode = "404", description = "Wishlist or product not found")
     })
     public ResponseEntity<Void> removeProductFromWishlist(@PathVariable String wishlistId, @PathVariable String productId) {
@@ -63,12 +68,12 @@ public class WishlistController {
     }
 
     @GetMapping("/customers/{customerId}")
-    @Operation(summary = "View Wishlist", description = "Retrieve the wishlist for a specific customer")
+    @Operation(summary = "View all wishlists for a customer", description = "Retrieves all wishlists for a specific customer.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful retrieval of the wishlist",
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved wishlists",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = WishlistResponse[].class)) }),
-            @ApiResponse(responseCode = "404", description = "Wishlist not found")
+            @ApiResponse(responseCode = "404", description = "Customer not found or no wishlists available")
     })
     public ResponseEntity<List<WishlistResponse>> viewWishlists(@PathVariable String customerId) {
         return ResponseEntity.status(HttpStatus.OK)
@@ -76,9 +81,9 @@ public class WishlistController {
     }
 
     @GetMapping("/{wishlistId}")
-    @Operation(summary = "View Single Wishlist", description = "Retrieve the wishlist for a specific customer")
+    @Operation(summary = "View a single wishlist", description = "Retrieves a single wishlist by its ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful retrieval of the wishlist",
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the wishlist",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = WishlistResponse.class)) }),
             @ApiResponse(responseCode = "404", description = "Wishlist not found")

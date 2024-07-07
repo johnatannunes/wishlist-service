@@ -13,8 +13,7 @@ public class ViewSingleWishlistUseCase {
     private final WishlistService wishlistService;
     private final WishlistMapper wishlistMapper;
 
-    public WishlistResponse execute(String id) {
-        return wishlistService.getWishlistById(id)
-                .map(wishlistMapper::toResponse).orElse(null);
+    public WishlistResponse execute(String wishlistId) {
+        return wishlistMapper.toResponse(wishlistService.getWishlistById(wishlistId));
     }
 }
