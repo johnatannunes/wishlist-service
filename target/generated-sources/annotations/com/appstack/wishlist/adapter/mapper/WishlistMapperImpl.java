@@ -4,7 +4,7 @@ import com.appstack.wishlist.adapter.web.controller.dto.ItemRequest;
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistRequest;
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistResponse;
 import com.appstack.wishlist.domain.enums.PrivacyStatusEnum;
-import com.appstack.wishlist.domain.model.Item;
+import com.appstack.wishlist.domain.model.Product;
 import com.appstack.wishlist.domain.model.Wishlist;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-06T06:33:14-0300",
+    date = "2024-07-06T21:23:32-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Amazon.com Inc.)"
 )
 @Component
@@ -27,22 +27,22 @@ public class WishlistMapperImpl implements WishlistMapper {
         }
 
         String id = null;
-        String userId = null;
+        String customerId = null;
         String listName = null;
         PrivacyStatusEnum privacyStatus = null;
-        List<ItemRequest> items = null;
+        List<ItemRequest> products = null;
         LocalDateTime createdAt = null;
         LocalDateTime updatedAt = null;
 
         id = wishlist.getId();
-        userId = wishlist.getUserId();
+        customerId = wishlist.getCustomerId();
         listName = wishlist.getListName();
         privacyStatus = wishlist.getPrivacyStatus();
-        items = itemListToItemRequestList( wishlist.getItems() );
+        products = itemListToItemRequestList( wishlist.getProducts() );
         createdAt = wishlist.getCreatedAt();
         updatedAt = wishlist.getUpdatedAt();
 
-        WishlistResponse wishlistResponse = new WishlistResponse( id, userId, listName, privacyStatus, items, createdAt, updatedAt );
+        WishlistResponse wishlistResponse = new WishlistResponse( id, customerId, listName, privacyStatus, products, createdAt, updatedAt );
 
         return wishlistResponse;
     }
@@ -55,15 +55,15 @@ public class WishlistMapperImpl implements WishlistMapper {
 
         Wishlist wishlist = new Wishlist();
 
-        wishlist.setUserId( request.userId() );
+        wishlist.setCustomerId( request.customerId() );
         wishlist.setListName( request.listName() );
         wishlist.setPrivacyStatus( request.privacyStatus() );
 
         return wishlist;
     }
 
-    protected ItemRequest itemToItemRequest(Item item) {
-        if ( item == null ) {
+    protected ItemRequest itemToItemRequest(Product product) {
+        if ( product == null ) {
             return null;
         }
 
@@ -71,23 +71,23 @@ public class WishlistMapperImpl implements WishlistMapper {
         String productName = null;
         Integer quantity = null;
 
-        productId = item.getProductId();
-        productName = item.getProductName();
-        quantity = item.getQuantity();
+        productId = product.getProductId();
+        productName = product.getProductName();
+        quantity = product.getQuantity();
 
         ItemRequest itemRequest = new ItemRequest( productId, productName, quantity );
 
         return itemRequest;
     }
 
-    protected List<ItemRequest> itemListToItemRequestList(List<Item> list) {
+    protected List<ItemRequest> itemListToItemRequestList(List<Product> list) {
         if ( list == null ) {
             return null;
         }
 
         List<ItemRequest> list1 = new ArrayList<ItemRequest>( list.size() );
-        for ( Item item : list ) {
-            list1.add( itemToItemRequest( item ) );
+        for ( Product product : list ) {
+            list1.add( itemToItemRequest(product) );
         }
 
         return list1;

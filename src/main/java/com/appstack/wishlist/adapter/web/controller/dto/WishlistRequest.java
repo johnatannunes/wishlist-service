@@ -5,6 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public record WishlistRequest(@NotBlank() String userId,
+public record WishlistRequest(@NotBlank() String customerId,
                               @NotBlank() @Size(min = 1) String listName,
                               @NotNull() PrivacyStatusEnum privacyStatus) {}

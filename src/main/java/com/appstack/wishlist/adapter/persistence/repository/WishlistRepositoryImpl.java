@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,11 +21,16 @@ public class WishlistRepositoryImpl implements WishlistRepository {
     }
 
     @Override
-    public Optional<Wishlist> findByUserId(String userId) {
-        return repository.findByUserId(userId);
+    public Optional<List<Wishlist>> findAllByCustomerId(String customerId) {
+        return repository.findByCustomerId(customerId);
+    }
+
+    @Override
+    public Optional<Wishlist> findById(String id) {
+        return repository.findById(id);
     }
 }
 
 interface WishlistPersistenceRepository extends MongoRepository<Wishlist, String> {
-    Optional<Wishlist> findByUserId(String userId);
+    Optional<List<Wishlist>> findByCustomerId(String customerId);
 }

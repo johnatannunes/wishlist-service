@@ -6,10 +6,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record WishlistResponse(String id,
-                               String userId,
+                               String customerId,
                                String listName,
                                PrivacyStatusEnum privacyStatus,
-                               List<ItemRequest> items,
+                               List<ItemRequest> products,
                                LocalDateTime createdAt,
                                LocalDateTime updatedAt) {
 }

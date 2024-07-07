@@ -1,13 +1,18 @@
 package com.appstack.wishlist.domain.service;
 
-import com.appstack.wishlist.domain.model.Item;
+import com.appstack.wishlist.domain.model.Product;
 import com.appstack.wishlist.domain.model.Wishlist;
 import com.appstack.wishlist.domain.repository.WishlistRepository;
+import com.appstack.wishlist.exception.PreconditionFailedException;
+import com.appstack.wishlist.exception.WishlistNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,22 +25,37 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public Wishlist createWishlist(Wishlist wishlist) {
-        logger.debug("Executando o caso de uso para adicionar o item {} à wishlist {}", wishlist.getUserId(),
-                wishlist.getListName());
         return wishlistRepository.save(wishlist);
     }
 
-    @Override
-    public Optional<Wishlist> getWishlistByUserId(String userId) {
-        return wishlistRepository.findByUserId(userId);
+    public Optional<List<Wishlist>> getAllWishlistsByCustomerId(String customerId) {
+        return wishlistRepository.findAllByCustomerId(customerId);
     }
 
     @Override
-    public Wishlist addItemToWishlist(String userId, Item item) {
-        return null;
+    public Optional<Wishlist> getWishlistById(String id) {
+        return wishlistRepository.findById(id);
     }
 
     @Override
-    public void removeItemFromWishlist(String userId, String itemId) {
+    public Wishlist addItemToWishlist(String wishlistId, Product product) {
+        var wishlistData = wishlistRepository.findById(wishlistId);
+        var wishlist = wishlistData.orElseThrow(() -> new WishlistNotFoundException(wishlistId));
+
+        if (ObjectUtils.isEmpty(wishlist.getProducts())) {
+            wishlist.setProducts(List.of(product));
+            return wishlistRepository.save(wishlist);
+        }
+
+        if (wishlist.getProducts().size() < 20) {
+            wishlist.getProducts().add(product);
+            return wishlistRepository.save(wishlist);
+        }else{
+            throw new PreconditionFailedException("Wishlist cannot have more than 20 products");
+        }
+    }
+
+    @Override
+    public void removeItemFromWishlist(String customerId, String itemId) {
     }
 }

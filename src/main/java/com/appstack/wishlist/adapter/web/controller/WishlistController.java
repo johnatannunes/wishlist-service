@@ -2,11 +2,8 @@ package com.appstack.wishlist.adapter.web.controller;
 
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistRequest;
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistResponse;
-import com.appstack.wishlist.application.usecase.AddItemToWishlistUseCase;
-import com.appstack.wishlist.application.usecase.CreateWishlistUseCase;
-import com.appstack.wishlist.application.usecase.RemoveItemFromWishlistUseCase;
-import com.appstack.wishlist.application.usecase.ViewWishlistUseCase;
-import com.appstack.wishlist.domain.model.Item;
+import com.appstack.wishlist.application.usecase.*;
+import com.appstack.wishlist.domain.model.Product;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/wishlists")
 @RequiredArgsConstructor
@@ -27,6 +26,7 @@ public class WishlistController {
     private final AddItemToWishlistUseCase addItemToWishlistUseCase;
     private final RemoveItemFromWishlistUseCase removeItemFromWishlistUseCase;
     private final ViewWishlistUseCase viewWishlistUseCase;
+    private final ViewSingleWishlistUseCase viewSingleWishlistUseCase;
 
     @PostMapping
     @Operation(summary = "Creation Wishlist", description = "Creation wishlist")
@@ -39,30 +39,30 @@ public class WishlistController {
                 .body(createWishlistUseCase.execute(wishlistRequest));
     }
 
-    @PostMapping("/{userId}/items")
+    @PostMapping("/{wishlistId}/products")
     @Operation(summary = "Add Item to Wishlist", description = "Add an item to a user's wishlist")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Item added successfully"),
             @ApiResponse(responseCode = "404", description = "Wishlist not found")
     })
-    public ResponseEntity<WishlistResponse> addItemToWishlist(@PathVariable String userId,
-                                                              @RequestBody @Valid Item item) {
+    public ResponseEntity<WishlistResponse> addItemToWishlist(@PathVariable String wishlistId,
+                                                              @RequestBody @Valid Product product) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(addItemToWishlistUseCase.execute(userId, item));
+                .body(addItemToWishlistUseCase.execute(wishlistId, product));
     }
 
-    @DeleteMapping("/{userId}/items/{itemId}")
+    @DeleteMapping("/{customerId}/products/{itemId}")
     @Operation(summary = "Remove Item from Wishlist", description = "Remove an item from a user's wishlist")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Item removed successfully"),
             @ApiResponse(responseCode = "404", description = "Wishlist or item not found")
     })
-    public ResponseEntity<Void> removeItemFromWishlist(@PathVariable String userId, @PathVariable String itemId) {
-        removeItemFromWishlistUseCase.execute(userId, itemId);
+    public ResponseEntity<Void> removeItemFromWishlist(@PathVariable String customerId, @PathVariable String itemId) {
+        removeItemFromWishlistUseCase.execute(customerId, itemId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/customers/{customerId}")
     @Operation(summary = "View Wishlist", description = "Retrieve the wishlist for a specific user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval of the wishlist",
@@ -70,8 +70,21 @@ public class WishlistController {
                             schema = @Schema(implementation = WishlistResponse.class)) }),
             @ApiResponse(responseCode = "404", description = "Wishlist not found")
     })
-    public ResponseEntity<WishlistResponse> viewWishlist(@PathVariable String userId) {
+    public ResponseEntity<List<WishlistResponse>> viewWishlists(@PathVariable String customerId) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(viewWishlistUseCase.execute(userId));
+                .body(viewWishlistUseCase.execute(customerId));
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "View Wishlist", description = "Retrieve the wishlist for a specific user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful retrieval of the wishlist",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = WishlistResponse.class)) }),
+            @ApiResponse(responseCode = "404", description = "Wishlist not found")
+    })
+    public ResponseEntity<WishlistResponse> viewSingleWishlists(@PathVariable String id) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(viewSingleWishlistUseCase.execute(id));
     }
 }

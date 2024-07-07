@@ -22,17 +22,17 @@ public class Wishlist {
     @Id
     private String id;
     @Field(targetType = FieldType.OBJECT_ID)
-    private String userId;
+    private String customerId;
     private String listName;
     private PrivacyStatusEnum privacyStatus;
-    private List<Item> items;
+    private List<Product> products;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Wishlist(String userId, List<Item> items) {
-        this.userId = userId;
-        this.items = items;
+    public Wishlist(String customerId, List<Product> products) {
+        this.customerId = customerId;
+        this.products = products;
     }
 }
