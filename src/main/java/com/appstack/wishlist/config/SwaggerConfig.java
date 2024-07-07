@@ -23,7 +23,7 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Wishlist API")
                         .version("1.0.0")
-                        .description("API for managing wishlists and items")
+                        .description("API for managing wishlists and products")
                         .termsOfService("https://example.com/terms"));
     }
 }

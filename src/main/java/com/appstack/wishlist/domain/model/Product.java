@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 
 @Data
 @AllArgsConstructor
-public class Item {
+public class Product {
     @Field(targetType = FieldType.OBJECT_ID)
     private String productId;
     private String productName;
