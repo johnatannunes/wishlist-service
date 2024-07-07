@@ -10,5 +10,5 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 public class Product {
     @Field(targetType = FieldType.OBJECT_ID)
     private String productId;
-    private Integer quantity;
+    private String name;
 }
