@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AddItemToWishlistUseCase {
+public class AddProductToWishlistUseCase {
 
     private final WishlistService wishlistService;
     private final ProductMapper productMapper;

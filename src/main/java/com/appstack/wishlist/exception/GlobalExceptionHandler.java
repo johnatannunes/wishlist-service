@@ -19,8 +19,8 @@ public class GlobalExceptionHandler {
                 .body(buildExceptionResponse(ex.getMessage(), HttpStatus.NOT_FOUND));
     }
 
-    @ExceptionHandler(ItemNotFoundException.class)
-    public ResponseEntity<MessageExceptionResponse> handleItemNotFoundException(ItemNotFoundException ex) {
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<MessageExceptionResponse> handleItemNotFoundException(ProductNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(buildExceptionResponse(ex.getMessage(), HttpStatus.NOT_FOUND));
     }

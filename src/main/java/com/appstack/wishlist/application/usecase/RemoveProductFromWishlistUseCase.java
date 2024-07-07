@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RemoveItemFromWishlistUseCase {
+public class RemoveProductFromWishlistUseCase {
 
     private final WishlistService wishlistService;
 
