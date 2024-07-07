@@ -9,5 +9,5 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 @AllArgsConstructor
 public class Product {
     @Field(targetType = FieldType.STRING)
-    private String productId;
+    private String id;
 }
