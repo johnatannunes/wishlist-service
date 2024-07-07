@@ -45,7 +45,7 @@ public class WishlistController {
             @ApiResponse(responseCode = "200", description = "product added successfully"),
             @ApiResponse(responseCode = "404", description = "Wishlist not found")
     })
-    public ResponseEntity<WishlistResponse> addproductToWishlist(@PathVariable String wishlistId,
+    public ResponseEntity<WishlistResponse> addProductToWishlist(@PathVariable String wishlistId,
                                                               @RequestBody @Valid ProductRequest product) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(addproductToWishlistUseCase.execute(wishlistId, product));
@@ -57,7 +57,7 @@ public class WishlistController {
             @ApiResponse(responseCode = "200", description = "product removed successfully"),
             @ApiResponse(responseCode = "404", description = "Wishlist or product not found")
     })
-    public ResponseEntity<Void> removeproductFromWishlist(@PathVariable String wishlistId, @PathVariable String productId) {
+    public ResponseEntity<Void> removeProductFromWishlist(@PathVariable String wishlistId, @PathVariable String productId) {
         removeProductFromWishlistUseCase.execute(wishlistId, productId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
