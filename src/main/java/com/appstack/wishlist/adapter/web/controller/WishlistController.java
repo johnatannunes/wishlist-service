@@ -40,7 +40,7 @@ public class WishlistController {
     }
 
     @PostMapping("/{wishlistId}/products")
-    @Operation(summary = "Add product to Wishlist", description = "Add an product to a user's wishlist")
+    @Operation(summary = "Add product to Wishlist", description = "Add an product to a customer's wishlist")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "product added successfully"),
             @ApiResponse(responseCode = "404", description = "Wishlist not found")
@@ -52,7 +52,7 @@ public class WishlistController {
     }
 
     @DeleteMapping("/{wishlistId}/products/{productId}")
-    @Operation(summary = "Remove product from Wishlist", description = "Remove an product from a user's wishlist")
+    @Operation(summary = "Remove product from Wishlist", description = "Remove an product from a customer's wishlist")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "product removed successfully"),
             @ApiResponse(responseCode = "404", description = "Wishlist or product not found")
@@ -63,7 +63,7 @@ public class WishlistController {
     }
 
     @GetMapping("/customers/{customerId}")
-    @Operation(summary = "View Wishlist", description = "Retrieve the wishlist for a specific user")
+    @Operation(summary = "View Wishlist", description = "Retrieve the wishlist for a specific customer")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval of the wishlist",
                     content = { @Content(mediaType = "application/json",
@@ -76,7 +76,7 @@ public class WishlistController {
     }
 
     @GetMapping("/{wishlistId}")
-    @Operation(summary = "View Wishlist", description = "Retrieve the wishlist for a specific user")
+    @Operation(summary = "View Single Wishlist", description = "Retrieve the wishlist for a specific customer")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval of the wishlist",
                     content = { @Content(mediaType = "application/json",
