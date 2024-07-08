@@ -13,6 +13,4 @@ public class ExternalProductCacheProducer {
     public void sendMessage(String topic,  String event) {
         kafkaTemplate.send(topic, event);
     }
-
-
 }
