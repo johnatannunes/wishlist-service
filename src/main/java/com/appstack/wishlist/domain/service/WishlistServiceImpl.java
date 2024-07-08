@@ -1,5 +1,7 @@
 package com.appstack.wishlist.domain.service;
 
+import com.appstack.wishlist.common.logging.Logging;
+import com.appstack.wishlist.config.MDCKey;
 import com.appstack.wishlist.domain.model.ExternalProduct;
 import com.appstack.wishlist.domain.model.Product;
 import com.appstack.wishlist.domain.model.Wishlist;
@@ -29,10 +31,20 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public Wishlist createWishlist(Wishlist wishlist) {
-        return wishlistRepository.save(wishlist);
+
+        Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
+                .info("method: {}, customer: {}",
+                       "createWishlist", wishlist.getCustomerId());
+
+        return  wishlistRepository.save(wishlist);
     }
 
     public List<WishlistDetail> getAllWishlistsByCustomerId(String customerId) {
+
+        Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
+                .info("method: {}, customer: {}",
+                        "getAllWishlistsByCustomerId", customerId);
+
         List<Wishlist> wishlists = wishlistRepository.findAllByCustomerId(customerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.NO_WISHLIST_FOR_CUSTOMER.getMessage()));
         return wishlists.stream().map(this::convertWishlistToWishlistDetail).toList();
@@ -40,12 +52,22 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public WishlistDetail getWishlistById(String wishlistId) {
+
+        Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
+                .info("method: {}, wishlistId: {}",
+                        "getWishlistById", wishlistId);
+
         Wishlist wishlist = findWishlistById(wishlistId);
         return convertWishlistToWishlistDetail(wishlist);
     }
 
     @Override
     public Wishlist addProductToWishlist(String wishlistId, Product product) {
+
+        Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
+                .info("method: {}, wishlistId: {}, productId: {}",
+                        "addProductToWishlist", wishlistId, product.getId());
+
         Wishlist wishlist = findWishlistById(wishlistId);
         addProductToWishlist(wishlist, product);
         return wishlistRepository.save(wishlist);
@@ -53,6 +75,11 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public void removeProductFromWishlist(String wishlistId, String productId) {
+
+        Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
+                .info("method: {}, wishlistId: {}, productId: {}",
+                        "removeProductFromWishlist", wishlistId, productId);
+
         Wishlist wishlist = findWishlistById(wishlistId);
         wishlist.getProducts().remove(new Product(productId));
         wishlistRepository.save(wishlist);

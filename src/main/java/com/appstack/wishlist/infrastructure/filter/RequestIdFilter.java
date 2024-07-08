@@ -1,6 +1,7 @@
 package com.appstack.wishlist.infrastructure.filter;
 
-import com.appstack.wishlist.config.MDCKeys;
+import com.appstack.wishlist.common.logging.Logging;
+import com.appstack.wishlist.config.MDCKey;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -26,11 +27,13 @@ public class RequestIdFilter implements Filter {
             throws IOException, ServletException {
         try {
             String requestId = UUID.randomUUID().toString();
-            MDC.put(MDCKeys.REQUEST_ID.getKey(), requestId);
+            MDC.put(MDCKey.REQUEST_ID.getKey(), requestId);
             if (servletResponse instanceof HttpServletResponse httpServletResponse) {
                 httpServletResponse.setHeader("X-Request-Id", requestId);
             }
-            logger.info("Starting request with ID: {}", requestId);
+
+            Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
+                    .info("Starting process");
 
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {

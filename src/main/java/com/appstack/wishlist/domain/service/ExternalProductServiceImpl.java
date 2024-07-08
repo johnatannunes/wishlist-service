@@ -1,6 +1,8 @@
 package com.appstack.wishlist.domain.service;
 
 import com.appstack.wishlist.adapter.cache.ExternalProductCacheService;
+import com.appstack.wishlist.common.logging.Logging;
+import com.appstack.wishlist.config.MDCKey;
 import com.appstack.wishlist.domain.kafka.KafkaTopicKey;
 import com.appstack.wishlist.domain.kafka.producer.ExternalProductCacheProducer;
 import com.appstack.wishlist.domain.model.ExternalProduct;
@@ -10,6 +12,8 @@ import com.appstack.wishlist.exception.PreconditionFailedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +25,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ExternalProductServiceImpl implements ExternalProductService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ExternalProductServiceImpl.class);
+
     private static final String PRODUCT_UNAVAILABLE = "Product Unavailable";
     private final ExternalProductRepository externalProductRepository;
     private final ExternalProductCacheProducer externalProductCacheProducer;
@@ -31,10 +37,20 @@ public class ExternalProductServiceImpl implements ExternalProductService {
     @Retry(name = "getProductsByIdsRetry", fallbackMethod = "getProductsByIdsFallback")
     public List<ExternalProduct> getProductsByIds(Set<String> productIds) {
         try {
+
+            Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
+                    .info("method: {}, productIds: {}",
+                            "getProductsByIds", productIds.toString());
+
             ExternalProduct[] externalProducts = externalProductRepository.getProductsByIds(new ArrayList<>(productIds));
             sendMessageToExternalProductTopic(externalProducts);
             return Arrays.stream(externalProducts).toList();
         }catch (Exception e){
+
+            Logging.logger(logger).mdcKey(MDCKey.PROCESS_ID)
+                    .error("method: {}, productIds: {}",
+                            "getProductsByIds", productIds.toString(), e.getMessage());
+
                throw new PreconditionFailedException(ErrorMessage.GENERIC_ERROR.getMessage());
         }
     }
@@ -48,15 +64,20 @@ public class ExternalProductServiceImpl implements ExternalProductService {
     }
 
     public List<ExternalProduct> getProductsByIdsFallback(Set<String> productIds, Throwable throwable) {
-        return externalProductCacheService.getExternalProduct(productIds.stream().toList());
+
+        Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
+                .error("method: getProductsByIdsFallback, productIds: {}", throwable);
+
+        return externalProductCacheService.getExternalProductCache(productIds.stream().toList());
     }
 
     private void sendMessageToExternalProductTopic(final ExternalProduct[] externalProducts){
         try {
             String json = objectMapper.writeValueAsString(externalProducts);
             externalProductCacheProducer.sendMessage(KafkaTopicKey.PRODUCT_EXTERNAL_TOPIC.getTopic(), json);
-        }catch (Exception ignored){
-            System.out.println("ss");
+        }catch (Exception e){
+            Logging.logger(logger).mdcKey(MDCKey.PROCESS_ID)
+                    .error("method: sendMessageToExternalProductTopic, productIds: {}", e);
         }
     }
 }

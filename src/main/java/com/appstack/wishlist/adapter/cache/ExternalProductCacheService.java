@@ -1,7 +1,11 @@
 package com.appstack.wishlist.adapter.cache;
 
+import com.appstack.wishlist.common.logging.Logging;
+import com.appstack.wishlist.config.MDCKey;
 import com.appstack.wishlist.domain.model.ExternalProduct;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,8 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ExternalProductCacheService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ExternalProductCacheService.class);
+
     private final CacheManager cacheManager;
 
     public void setExternalProductCache(ExternalProduct[] externalProducts){
@@ -24,9 +30,12 @@ public class ExternalProductCacheService {
                 cache.put(product.getId(), product);
             }
         }
+
+        Logging.logger(logger).mdcKey(MDCKey.PROCESS_ID)
+                .info("method: setExternalProductCache, externalProductsSize: {}", externalProducts.length);
     }
 
-    public List<ExternalProduct> getExternalProduct(final List<String> productIds) {
+    public List<ExternalProduct> getExternalProductCache(final List<String> productIds) {
         List<com.appstack.wishlist.domain.model.ExternalProduct> productsExternalCache = new ArrayList<>();
         var cache = cacheManager.getCache(CacheKey.EXTERNAL_PRODUCT_CACHE.getKey());
         if (Objects.nonNull(cache)) {
@@ -37,6 +46,9 @@ public class ExternalProductCacheService {
                 }
             });
         }
+
+        Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
+                .info("method: getExternalProductCache, productIds: {}", productIds.toString());
 
         return productsExternalCache;
     }

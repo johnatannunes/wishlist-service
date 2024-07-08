@@ -1,11 +1,12 @@
 package com.appstack.wishlist.config;
 
-public enum MDCKeys {
+public enum MDCKey {
+    PROCESS_ID("processId"),
     REQUEST_ID("requestId");
 
     private final String key;
 
-    MDCKeys(String key) {
+    MDCKey(String key) {
         this.key = key;
     }
 
