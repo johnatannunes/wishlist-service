@@ -18,7 +18,7 @@ public class ExternalProductCacheService {
     private final CacheManager cacheManager;
 
     public void setExternalProductCache(ExternalProduct[] externalProducts){
-        Cache cache = cacheManager.getCache("products_cache");
+        Cache cache = cacheManager.getCache(CacheKey.EXTERNAL_PRODUCT_CACHE.getKey());
         if (!ObjectUtils.isEmpty(cache)) {
             for (ExternalProduct product : externalProducts) {
                 cache.put(product.getId(), product);
