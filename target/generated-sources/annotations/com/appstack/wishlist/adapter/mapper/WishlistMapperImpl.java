@@ -1,6 +1,6 @@
 package com.appstack.wishlist.adapter.mapper;
 
-import com.appstack.wishlist.adapter.web.controller.dto.ProductRequest;
+import com.appstack.wishlist.adapter.web.controller.dto.ProductResponse;
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistRequest;
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistResponse;
 import com.appstack.wishlist.domain.enums.PrivacyStatusEnum;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-07T19:09:11-0300",
+    date = "2024-07-08T01:26:51-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Amazon.com Inc.)"
 )
 @Component
@@ -30,7 +30,7 @@ public class WishlistMapperImpl implements WishlistMapper {
         String customerId = null;
         String listName = null;
         PrivacyStatusEnum privacyStatus = null;
-        List<ProductRequest> products = null;
+        List<ProductResponse> products = null;
         LocalDateTime createdAt = null;
         LocalDateTime updatedAt = null;
 
@@ -38,7 +38,7 @@ public class WishlistMapperImpl implements WishlistMapper {
         customerId = wishlist.getCustomerId();
         listName = wishlist.getListName();
         privacyStatus = wishlist.getPrivacyStatus();
-        products = productListToProductRequestList( wishlist.getProducts() );
+        products = toProductResponseList( wishlist.getProducts() );
         createdAt = wishlist.getCreatedAt();
         updatedAt = wishlist.getUpdatedAt();
 
@@ -62,7 +62,35 @@ public class WishlistMapperImpl implements WishlistMapper {
         return wishlist;
     }
 
-    protected ProductRequest productToProductRequest(Product product) {
+    @Override
+    public List<ProductResponse> toProductResponseList(List<Product> products) {
+        if ( products == null ) {
+            return null;
+        }
+
+        List<ProductResponse> list = new ArrayList<ProductResponse>( products.size() );
+        for ( Product product : products ) {
+            list.add( productToProductResponse( product ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<Product> toProductList(List<ProductResponse> products) {
+        if ( products == null ) {
+            return null;
+        }
+
+        List<Product> list = new ArrayList<Product>( products.size() );
+        for ( ProductResponse productResponse : products ) {
+            list.add( productResponseToProduct( productResponse ) );
+        }
+
+        return list;
+    }
+
+    protected ProductResponse productToProductResponse(Product product) {
         if ( product == null ) {
             return null;
         }
@@ -71,21 +99,22 @@ public class WishlistMapperImpl implements WishlistMapper {
 
         id = product.getId();
 
-        ProductRequest productRequest = new ProductRequest( id );
+        ProductResponse productResponse = new ProductResponse( id );
 
-        return productRequest;
+        return productResponse;
     }
 
-    protected List<ProductRequest> productListToProductRequestList(List<Product> list) {
-        if ( list == null ) {
+    protected Product productResponseToProduct(ProductResponse productResponse) {
+        if ( productResponse == null ) {
             return null;
         }
 
-        List<ProductRequest> list1 = new ArrayList<ProductRequest>( list.size() );
-        for ( Product product : list ) {
-            list1.add( productToProductRequest( product ) );
-        }
+        String id = null;
 
-        return list1;
+        id = productResponse.id();
+
+        Product product = new Product( id );
+
+        return product;
     }
 }

@@ -1,6 +1,7 @@
 package com.appstack.wishlist.adapter.web.controller;
 
 import com.appstack.wishlist.adapter.web.controller.dto.ProductRequest;
+import com.appstack.wishlist.adapter.web.controller.dto.WishlistDetailResponse;
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistRequest;
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistResponse;
 import com.appstack.wishlist.application.usecase.*;
@@ -88,7 +89,7 @@ public class WishlistController {
                             schema = @Schema(implementation = WishlistResponse.class)) }),
             @ApiResponse(responseCode = "404", description = "Wishlist not found")
     })
-    public ResponseEntity<WishlistResponse> viewSingleWishlists(@PathVariable String wishlistId) {
+    public ResponseEntity<WishlistDetailResponse> viewSingleWishlists(@PathVariable String wishlistId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(viewSingleWishlistUseCase.execute(wishlistId));
     }

@@ -7,7 +7,6 @@ import org.slf4j.MDC;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,7 +38,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<MessageExceptionResponse> handleGeneralException(Exception ex) {
+    public ResponseEntity<MessageExceptionResponse> handleGeneralException() {
         return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED)
                 .body(buildExceptionResponse(ErrorMessage.GENERIC_ERROR.getMessage(), HttpStatus.PRECONDITION_FAILED));
     }
