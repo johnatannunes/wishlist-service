@@ -4,7 +4,7 @@ import com.appstack.wishlist.domain.model.ExternalProduct;
 import com.appstack.wishlist.domain.repository.ExternalProductRepository;
 import com.appstack.wishlist.exception.ErrorMessage;
 import com.appstack.wishlist.exception.PreconditionFailedException;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class ExternalProductServiceImpl implements ExternalProductService {
     private final ExternalProductRepository externalProductRepository;
 
     @Override
-    @CircuitBreaker(name = "countriesCircuitBreaker", fallbackMethod = "fallbackMethod")
+    @Retry(name = "getProductsByIdsRetry", fallbackMethod = "getProductsByIdsFallback")
     public List<ExternalProduct> getProductsByIds(Set<String> productIds) {
         try {
             ExternalProduct[] externalProducts = externalProductRepository.getProductsByIds(new ArrayList<>(productIds));
@@ -31,7 +31,7 @@ public class ExternalProductServiceImpl implements ExternalProductService {
         }
     }
 
-    public List<ExternalProduct> fallbackMethod(Throwable throwable) {
+    public List<ExternalProduct> getProductsByIdsFallback(Set<String> productIds, Throwable throwable) {
         return new ArrayList<>();
     }
 
