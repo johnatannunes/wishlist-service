@@ -1,7 +1,7 @@
 package com.appstack.wishlist.application.usecase;
 
-import com.appstack.wishlist.adapter.mapper.WishlistMapper;
-import com.appstack.wishlist.adapter.web.controller.dto.WishlistResponse;
+import com.appstack.wishlist.adapter.mapper.WishlistDetailMapper;
+import com.appstack.wishlist.adapter.web.controller.dto.WishlistDetailResponse;
 import com.appstack.wishlist.domain.service.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,12 +13,12 @@ import java.util.List;
 public class ViewWishlistUseCase {
 
     private final WishlistService wishlistService;
-    private final WishlistMapper wishlistMapper;
+    private final WishlistDetailMapper wishlistDetailMapper;
 
-    public List<WishlistResponse> execute(String customerId) {
+    public List<WishlistDetailResponse> execute(String customerId) {
         return wishlistService.getAllWishlistsByCustomerId(customerId)
                 .stream()
-                .map(wishlistMapper::toResponse)
+                .map(wishlistDetailMapper::toResponse)
                 .toList();
     }
 }

@@ -76,7 +76,7 @@ public class WishlistController {
                             schema = @Schema(implementation = WishlistResponse[].class)) }),
             @ApiResponse(responseCode = "404", description = "Customer not found or no wishlists available")
     })
-    public ResponseEntity<List<WishlistResponse>> viewWishlists(@PathVariable String customerId) {
+    public ResponseEntity<List<WishlistDetailResponse>> viewWishlists(@PathVariable String customerId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(viewWishlistUseCase.execute(customerId));
     }

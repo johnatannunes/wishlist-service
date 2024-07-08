@@ -4,7 +4,6 @@ import com.appstack.wishlist.domain.model.ExternalProduct;
 import com.appstack.wishlist.domain.model.Product;
 import com.appstack.wishlist.domain.model.Wishlist;
 import com.appstack.wishlist.domain.model.WishlistDetail;
-import com.appstack.wishlist.domain.repository.ExternalProductRepository;
 import com.appstack.wishlist.domain.repository.WishlistRepository;
 import com.appstack.wishlist.exception.ErrorMessage;
 import com.appstack.wishlist.exception.NotFoundException;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,51 +25,23 @@ public class WishlistServiceImpl implements WishlistService {
     private static final Logger logger = LoggerFactory.getLogger(WishlistServiceImpl.class);
     private static final int MAXIMUM_QUANTITY_OF_PRODUCTS_ALLOWED = 20;
     private final WishlistRepository wishlistRepository;
-    private final ExternalProductRepository externalProductRepository;
+    private final ExternalProductService externalProductService;
 
     @Override
     public Wishlist createWishlist(Wishlist wishlist) {
         return wishlistRepository.save(wishlist);
     }
 
-    public List<Wishlist> getAllWishlistsByCustomerId(String customerId) {
-        return wishlistRepository.findAllByCustomerId(customerId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.WISHLIST_LIST_NOT_FOUND.getMessage()));
+    public List<WishlistDetail> getAllWishlistsByCustomerId(String customerId) {
+        List<Wishlist> wishlists = wishlistRepository.findAllByCustomerId(customerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.NO_WISHLIST_FOR_CUSTOMER.getMessage()));
+        return wishlists.stream().map(this::convertWishlistToWishlistDetail).toList();
     }
 
     @Override
     public WishlistDetail getWishlistById(String wishlistId) {
         Wishlist wishlist = findWishlistById(wishlistId);
-
-        List<ExternalProduct> externalProductsProcessed = new ArrayList<>();
-
-        if (!ObjectUtils.isEmpty(wishlist) && !ObjectUtils.isEmpty(wishlist.getProducts())) {
-            final Set<String> productsIs = wishlist.getProducts().stream().map(Product::getId)
-                    .collect(Collectors.toSet());
-
-            final Set<ExternalProduct> externalProducts = new HashSet<>(externalProductRepository
-                    .getProductsByIds(productsIs.stream().toList()));
-
-            for (String productId : productsIs) {
-                externalProductsProcessed.add(externalProducts.stream().filter(product -> Objects.equals(productId, product.getId()))
-                        .findFirst().orElse(ExternalProduct.builder()
-                                .id(productId)
-                                .observation("Product Unavailable")
-                                .build()));
-            }
-        }
-
-        return buildWishlistDetail(wishlist, externalProductsProcessed);
-    }
-
-    private WishlistDetail buildWishlistDetail(Wishlist wishlist, List<ExternalProduct> externalProducts) {
-        return new WishlistDetail(wishlist.getId(),
-                wishlist.getCustomerId(),
-                wishlist.getListName(),
-                wishlist.getPrivacyStatus(),
-                externalProducts,
-                wishlist.getCreatedAt(),
-                wishlist.getUpdatedAt());
+        return convertWishlistToWishlistDetail(wishlist);
     }
 
     @Override
@@ -84,6 +56,50 @@ public class WishlistServiceImpl implements WishlistService {
         Wishlist wishlist = findWishlistById(wishlistId);
         wishlist.getProducts().remove(new Product(productId));
         wishlistRepository.save(wishlist);
+    }
+
+    private WishlistDetail convertWishlistToWishlistDetail(Wishlist wishlist){
+
+        if(!ObjectUtils.isEmpty(wishlist.getProducts())){
+            Set<String> productIds = extractProductIds(wishlist);
+            List<ExternalProduct> externalProducts = fetchExternalProducts(productIds);
+            List<ExternalProduct> externalProductsProcessed = processExternalProducts(productIds, externalProducts);
+            return buildWishlistDetail(wishlist, externalProductsProcessed);
+        }
+
+        return buildWishlistDetail(wishlist, List.of());
+    }
+
+    private Set<String> extractProductIds(Wishlist wishlist) {
+        return wishlist.getProducts().stream()
+                .map(Product::getId)
+                .collect(Collectors.toSet());
+    }
+
+    private List<ExternalProduct> fetchExternalProducts(Set<String> productIds) {
+        return externalProductService.getProductsByIds(productIds);
+    }
+
+    private List<ExternalProduct> processExternalProducts(Set<String> productIds,
+                                                          List<ExternalProduct> externalProducts) {
+        Map<String, ExternalProduct> productMap = externalProducts.stream()
+                .collect(Collectors.toMap(ExternalProduct::getId, Function.identity(),
+                        (existing, replacement) -> existing));
+
+        return productIds.stream()
+                .map(productId -> productMap.getOrDefault(productId,
+                        externalProductService.getUnavailableProduct(productId)))
+                .toList();
+    }
+
+    private WishlistDetail buildWishlistDetail(Wishlist wishlist, List<ExternalProduct> externalProducts) {
+        return new WishlistDetail(wishlist.getId(),
+                wishlist.getCustomerId(),
+                wishlist.getListName(),
+                wishlist.getPrivacyStatus(),
+                externalProducts,
+                wishlist.getCreatedAt(),
+                wishlist.getUpdatedAt());
     }
 
     private Wishlist findWishlistById(String wishlistId) {
