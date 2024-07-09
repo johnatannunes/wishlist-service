@@ -7,7 +7,7 @@ import com.appstack.wishlist.domain.kafka.KafkaTopicKey;
 import com.appstack.wishlist.domain.kafka.producer.ExternalProductCacheProducer;
 import com.appstack.wishlist.domain.model.ExternalProduct;
 import com.appstack.wishlist.domain.repository.ExternalProductRepository;
-import com.appstack.wishlist.exception.ErrorMessage;
+import com.appstack.wishlist.exception.ExceptionMessage;
 import com.appstack.wishlist.exception.PreconditionFailedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -51,7 +51,7 @@ public class ExternalProductServiceImpl implements ExternalProductService {
                     .error("method: {}, productIds: {}",
                             "getProductsByIds", productIds.toString(), e.getMessage());
 
-               throw new PreconditionFailedException(ErrorMessage.GENERIC_ERROR.getMessage());
+               throw new PreconditionFailedException(ExceptionMessage.GENERIC_ERROR);
         }
     }
 

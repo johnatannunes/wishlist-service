@@ -2,6 +2,7 @@ package com.appstack.wishlist.adapter.web.controller;
 
 import com.appstack.wishlist.adapter.web.controller.dto.*;
 import com.appstack.wishlist.application.usecase.*;
+import com.appstack.wishlist.exception.ExceptionMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,14 +28,15 @@ public class WishlistController {
     private final ViewSingleWishlistUseCase viewSingleWishlistUseCase;
     private final ViewProductInWishlistUseCase viewProductInWishlistUseCase;
 
-    @PostMapping
     @Operation(summary = "Create a new wishlist", description = "Creates a new wishlist for a customer.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Wishlist created successfully",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = WishlistResponse.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid input data")
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "412", description = ExceptionMessage.GENERIC_ERROR)
     })
+    @PostMapping
     public ResponseEntity<WishlistResponse> createWishlist(@RequestBody @Valid WishlistRequest wishlistRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(createWishlistUseCase.execute(wishlistRequest));
@@ -46,8 +48,9 @@ public class WishlistController {
             @ApiResponse(responseCode = "200", description = "Product added successfully",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = WishlistResponse.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid product data or wishlist ID"),
-            @ApiResponse(responseCode = "404", description = "Wishlist not found")
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "404", description = ExceptionMessage.WISHLIST_LIST_NOT_FOUND),
+            @ApiResponse(responseCode = "412", description = ExceptionMessage.GENERIC_ERROR)
     })
     public ResponseEntity<WishlistResponse> addProductToWishlist(@PathVariable String wishlistId,
                                                               @RequestBody @Valid ProductRequest product) {
@@ -60,7 +63,8 @@ public class WishlistController {
             description = "Removes a product from an existing wishlist.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Product removed successfully"),
-            @ApiResponse(responseCode = "404", description = "Wishlist or product not found")
+            @ApiResponse(responseCode = "404", description = ExceptionMessage.PRODUCT_IN_WISHLIST_NOT_FOUND),
+            @ApiResponse(responseCode = "412", description = ExceptionMessage.GENERIC_ERROR)
     })
     public ResponseEntity<Void> removeProductFromWishlist(@PathVariable String wishlistId,
                                                           @PathVariable String productId) {
@@ -74,7 +78,8 @@ public class WishlistController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved wishlists",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = WishlistResponse[].class)) }),
-            @ApiResponse(responseCode = "404", description = "Customer not found or no wishlists available")
+            @ApiResponse(responseCode = "404", description = ExceptionMessage.NO_WISHLIST_FOR_CUSTOMER),
+            @ApiResponse(responseCode = "412", description = ExceptionMessage.GENERIC_ERROR)
     })
     @GetMapping("/customers/{customerId}")
     public ResponseEntity<List<WishlistDetailResponse>> viewWishlists(@PathVariable String customerId) {
@@ -88,19 +93,25 @@ public class WishlistController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the wishlist",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = WishlistResponse.class)) }),
-            @ApiResponse(responseCode = "404", description = "Wishlist not found")
+            @ApiResponse(responseCode = "404", description = ExceptionMessage.WISHLIST_LIST_NOT_FOUND),
+            @ApiResponse(responseCode = "412", description = ExceptionMessage.GENERIC_ERROR)
     })
     public ResponseEntity<WishlistDetailResponse> viewSingleWishlists(@PathVariable String wishlistId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(viewSingleWishlistUseCase.execute(wishlistId));
     }
 
-    @Operation(summary = "View a single wishlist", description = "Retrieves a single wishlist by its ID.")
+    @Operation(summary = "View a single product in a wishlist",
+            description = "Retrieves a specific product by its ID from a wishlist identified by its ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved the wishlist",
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the product from the wishlist",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = WishlistResponse.class)) }),
-            @ApiResponse(responseCode = "404", description = "Wishlist not found")
+                            schema = @Schema(implementation = WishlistDetailResponse.class)) }),
+            @ApiResponse(responseCode = "404", description = ExceptionMessage.PRODUCT_IN_WISHLIST_NOT_FOUND,
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid input parameters",
+                    content = @Content),
+            @ApiResponse(responseCode = "412", description = ExceptionMessage.GENERIC_ERROR)
     })
     @GetMapping("/{wishlistId}/products/{productId}")
     public ResponseEntity<WishlistDetailResponse> viewSingleWishlists(@PathVariable String wishlistId,

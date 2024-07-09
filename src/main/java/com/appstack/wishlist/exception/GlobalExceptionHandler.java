@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MessageExceptionResponse> handleGeneralException(Exception ex) {
         return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED)
-                .body(buildExceptionResponse(ErrorMessage.GENERIC_ERROR.getMessage(),
+                .body(buildExceptionResponse(ExceptionMessage.GENERIC_ERROR,
                         HttpStatus.PRECONDITION_FAILED, ex));
     }
 
@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
 
         Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
                               .error("message: {}, Http Status: {}, Error: {}",
-                                  ErrorMessage.GENERIC_ERROR.getMessage(), httpStatus, throwable.fillInStackTrace());
+                                  ExceptionMessage.GENERIC_ERROR, httpStatus, throwable.fillInStackTrace());
 
         return MessageExceptionResponse.builder()
                 .message(message)

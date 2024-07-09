@@ -7,7 +7,7 @@ import com.appstack.wishlist.domain.model.Product;
 import com.appstack.wishlist.domain.model.Wishlist;
 import com.appstack.wishlist.domain.model.WishlistDetail;
 import com.appstack.wishlist.domain.repository.WishlistRepository;
-import com.appstack.wishlist.exception.ErrorMessage;
+import com.appstack.wishlist.exception.ExceptionMessage;
 import com.appstack.wishlist.exception.NotFoundException;
 import com.appstack.wishlist.exception.PreconditionFailedException;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class WishlistServiceImpl implements WishlistService {
                 .info("method: getAllWishlistsByCustomerId, customer: {}", customerId);
 
         List<Wishlist> wishlists = wishlistRepository.findAllByCustomerId(customerId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.NO_WISHLIST_FOR_CUSTOMER.getMessage()));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.NO_WISHLIST_FOR_CUSTOMER));
         return wishlists.stream().map(this::convertWishlistToWishlistDetail).toList();
     }
 
@@ -55,7 +55,7 @@ public class WishlistServiceImpl implements WishlistService {
                 .info("method: getWishlistById, wishlistId: {}", wishlistId);
 
         Wishlist wishlist = findWishlistById(wishlistId);
-        checkIfWishListIsNull(wishlist);
+        checkIfWishListIsNull(wishlist, ExceptionMessage.WISHLIST_LIST_NOT_FOUND);
         return convertWishlistToWishlistDetail(wishlist);
     }
 
@@ -67,7 +67,7 @@ public class WishlistServiceImpl implements WishlistService {
                          wishlistId, product.getId());
 
         Wishlist wishlist = findWishlistById(wishlistId);
-        checkIfWishListIsNull(wishlist);
+        checkIfWishListIsNull(wishlist, ExceptionMessage.WISHLIST_LIST_NOT_FOUND);
         addProductToWishlist(wishlist, product);
         return wishlistRepository.save(wishlist);
     }
@@ -80,7 +80,7 @@ public class WishlistServiceImpl implements WishlistService {
                          wishlistId, productId);
 
         Wishlist wishlist = findWishlistById(wishlistId);
-        checkIfWishListIsNull(wishlist);
+        checkIfWishListIsNull(wishlist, ExceptionMessage.WISHLIST_LIST_NOT_FOUND);
         wishlist.getProducts().remove(new Product(productId));
         wishlistRepository.save(wishlist);
     }
@@ -93,7 +93,7 @@ public class WishlistServiceImpl implements WishlistService {
                          wishlistId, productId);
 
         Wishlist wishlist = wishlistRepository.findProductInWishlist(wishlistId, productId);
-        checkIfWishListIsNull(wishlist);
+        checkIfWishListIsNull(wishlist, ExceptionMessage.PRODUCT_IN_WISHLIST_NOT_FOUND);
         return convertWishlistToWishlistDetail(wishlist);
     }
 
@@ -143,7 +143,7 @@ public class WishlistServiceImpl implements WishlistService {
 
     private Wishlist findWishlistById(String wishlistId) {
         return wishlistRepository.findById(wishlistId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.WISHLIST_LIST_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.WISHLIST_LIST_NOT_FOUND));
     }
 
     private void addProductToWishlist(Wishlist wishlist, Product product) {
@@ -161,7 +161,7 @@ public class WishlistServiceImpl implements WishlistService {
 
     private void checkProductLimitInWishlist(Wishlist wishlist) {
         if (Objects.equals(wishlist.getProducts().size(), MAXIMUM_QUANTITY_OF_PRODUCTS_ALLOWED)) {
-            throw new PreconditionFailedException(ErrorMessage.WISHLIST_MAX_PRODUCTS.getMessage());
+            throw new PreconditionFailedException(ExceptionMessage.WISHLIST_MAX_PRODUCTS);
         }
     }
 
@@ -172,13 +172,13 @@ public class WishlistServiceImpl implements WishlistService {
                         -> Objects.equals(product.getId(), productInList.getId()));
 
         if (productExists) {
-            throw new PreconditionFailedException(ErrorMessage.PRODUCT_ALREADY_EXISTS.getMessage());
+            throw new PreconditionFailedException(ExceptionMessage.PRODUCT_ALREADY_EXISTS);
         }
     }
 
-    private void checkIfWishListIsNull(Wishlist wishlist) {
+    private void checkIfWishListIsNull(Wishlist wishlist, final String ExceptionMessage) {
         if (ObjectUtils.isEmpty(wishlist)) {
-            throw new NotFoundException(ErrorMessage.WISHLIST_LIST_NOT_FOUND.getMessage());
+            throw new NotFoundException(ExceptionMessage);
         }
     }
 }
