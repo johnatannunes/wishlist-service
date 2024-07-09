@@ -33,8 +33,7 @@ public class WishlistServiceImpl implements WishlistService {
     public Wishlist createWishlist(Wishlist wishlist) {
 
         Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
-                .info("method: {}, customer: {}",
-                       "createWishlist", wishlist.getCustomerId());
+                .info("method: createWishlist, customer: {}", wishlist.getCustomerId());
 
         return  wishlistRepository.save(wishlist);
     }
@@ -42,8 +41,7 @@ public class WishlistServiceImpl implements WishlistService {
     public List<WishlistDetail> getAllWishlistsByCustomerId(String customerId) {
 
         Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
-                .info("method: {}, customer: {}",
-                        "getAllWishlistsByCustomerId", customerId);
+                .info("method: getAllWishlistsByCustomerId, customer: {}", customerId);
 
         List<Wishlist> wishlists = wishlistRepository.findAllByCustomerId(customerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.NO_WISHLIST_FOR_CUSTOMER.getMessage()));
@@ -54,10 +52,10 @@ public class WishlistServiceImpl implements WishlistService {
     public WishlistDetail getWishlistById(String wishlistId) {
 
         Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
-                .info("method: {}, wishlistId: {}",
-                        "getWishlistById", wishlistId);
+                .info("method: getWishlistById, wishlistId: {}", wishlistId);
 
         Wishlist wishlist = findWishlistById(wishlistId);
+        checkIfWishListIsNull(wishlist);
         return convertWishlistToWishlistDetail(wishlist);
     }
 
@@ -65,10 +63,11 @@ public class WishlistServiceImpl implements WishlistService {
     public Wishlist addProductToWishlist(String wishlistId, Product product) {
 
         Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
-                .info("method: {}, wishlistId: {}, productId: {}",
-                        "addProductToWishlist", wishlistId, product.getId());
+                .info("method: addProductToWishlist, wishlistId: {}, productId: {}",
+                         wishlistId, product.getId());
 
         Wishlist wishlist = findWishlistById(wishlistId);
+        checkIfWishListIsNull(wishlist);
         addProductToWishlist(wishlist, product);
         return wishlistRepository.save(wishlist);
     }
@@ -77,12 +76,25 @@ public class WishlistServiceImpl implements WishlistService {
     public void removeProductFromWishlist(String wishlistId, String productId) {
 
         Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
-                .info("method: {}, wishlistId: {}, productId: {}",
-                        "removeProductFromWishlist", wishlistId, productId);
+                .info("method: removeProductFromWishlist, wishlistId: {}, productId: {}",
+                         wishlistId, productId);
 
         Wishlist wishlist = findWishlistById(wishlistId);
+        checkIfWishListIsNull(wishlist);
         wishlist.getProducts().remove(new Product(productId));
         wishlistRepository.save(wishlist);
+    }
+
+    @Override
+    public WishlistDetail getProductInWishlist(String wishlistId, String productId) {
+
+        Logging.logger(logger).mdcKey(MDCKey.REQUEST_ID)
+                .info("method: getProductInWishlist, wishlistId: {}, productId: {}",
+                         wishlistId, productId);
+
+        Wishlist wishlist = wishlistRepository.findProductInWishlist(wishlistId, productId);
+        checkIfWishListIsNull(wishlist);
+        return convertWishlistToWishlistDetail(wishlist);
     }
 
     private WishlistDetail convertWishlistToWishlistDetail(Wishlist wishlist){
@@ -161,6 +173,12 @@ public class WishlistServiceImpl implements WishlistService {
 
         if (productExists) {
             throw new PreconditionFailedException(ErrorMessage.PRODUCT_ALREADY_EXISTS.getMessage());
+        }
+    }
+
+    private void checkIfWishListIsNull(Wishlist wishlist) {
+        if (ObjectUtils.isEmpty(wishlist)) {
+            throw new NotFoundException(ErrorMessage.WISHLIST_LIST_NOT_FOUND.getMessage());
         }
     }
 }

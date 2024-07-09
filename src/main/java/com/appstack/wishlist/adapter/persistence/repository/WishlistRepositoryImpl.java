@@ -4,6 +4,7 @@ import com.appstack.wishlist.domain.model.Wishlist;
 import com.appstack.wishlist.domain.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,8 +30,16 @@ public class WishlistRepositoryImpl implements WishlistRepository {
     public Optional<Wishlist> findById(String id) {
         return repository.findById(id);
     }
+
+    @Override
+    public Wishlist findProductInWishlist(String wishlistId, String productId) {
+        return repository.findProductInWishlist(wishlistId, productId);
+    }
 }
 
 interface WishlistPersistenceRepository extends MongoRepository<Wishlist, String> {
     Optional<List<Wishlist>> findByCustomerId(String customerId);
+    @Query(value = "{ '_id': ?0, 'products._id': ?1 }",
+            fields = "{ 'products.$': 1, 'listName': 1 }")
+    Wishlist findProductInWishlist(String wishlistId, String productId);
 }

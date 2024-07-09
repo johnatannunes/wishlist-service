@@ -9,4 +9,5 @@ public interface WishlistRepository {
     Wishlist save(Wishlist wishlist);
     Optional<List<Wishlist>> findAllByCustomerId(String customerId);
     Optional<Wishlist> findById(String wishlistId);
+    Wishlist findProductInWishlist(String wishlistId, String productId);
 }

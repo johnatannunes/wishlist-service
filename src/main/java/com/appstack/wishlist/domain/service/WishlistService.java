@@ -12,4 +12,5 @@ public interface WishlistService {
     WishlistDetail getWishlistById(String wishlistId);
     Wishlist addProductToWishlist(String wishlistId, Product product);
     void removeProductFromWishlist(String customerId, String productId);
+    WishlistDetail getProductInWishlist(String wishlistId, String productId);
 }
