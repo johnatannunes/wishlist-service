@@ -7,6 +7,8 @@ import com.appstack.wishlist.adapter.web.controller.dto.WishlistResponse;
 import com.appstack.wishlist.cucumber.CucumberSpringConfiguration;
 import com.appstack.wishlist.cucumber.context.WishlistFeatureContext;
 import com.appstack.wishlist.domain.enums.PrivacyStatusEnum;
+import com.appstack.wishlist.domain.model.Product;
+import com.appstack.wishlist.domain.model.Wishlist;
 import com.appstack.wishlist.exception.MessageExceptionResponse;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.E;
@@ -14,9 +16,12 @@ import io.cucumber.java.pt.Entao;
 import io.cucumber.java.pt.Quando;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.junit.jupiter.api.Assertions;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+
+import java.util.ArrayList;
 
 @CucumberContextConfiguration
 public class StepDefinitions extends CucumberSpringConfiguration {
@@ -27,14 +32,12 @@ public class StepDefinitions extends CucumberSpringConfiguration {
     private ResponseEntity<?> response;
     private ProductRequest productRequest;
     private MessageExceptionResponse messageExceptionResponse;
+    private Wishlist wishListPreInsertResult;
 
-    public StepDefinitions(WishlistFeatureContext context) {
+    public StepDefinitions(WishlistFeatureContext context, MongoTemplate mongoTemplate) {
         this.testContext = context;
+        CucumberSpringConfiguration.mongoTemplate = mongoTemplate;
     }
-
-    /*
-       Scenario: Criar uma Wishlist para um cliente
-     */
 
     @Dado("que o cliente com ID {string} ainda não possui uma wishlist criada")
     public void que_o_cliente_com_id_ainda_nao_possui_uma_wishlist_criada(String customerId) {
@@ -62,10 +65,6 @@ public class StepDefinitions extends CucumberSpringConfiguration {
         Assertions.assertEquals(testContext.getWishlistResponse().customerId(), customerId);
     }
 
-    /*
-       Scenario: Adicionar um produto na Wishlist do cliente
-     */
-
     @Dado("que o cliente tem uma wishlist")
     public void que_o_cliente_tem_uma_wishlist() {
         Assertions.assertNotNull(testContext.getWishlistResponse());
@@ -92,10 +91,6 @@ public class StepDefinitions extends CucumberSpringConfiguration {
         Assertions.assertEquals(testContext.getWishlistResponse().products().getFirst().id(), productId);
     }
 
-    /*
-       Scenario: Consultar todos os produtos da Wishlist do cliente
-     */
-
     @Dado("que o cliente tem uma wishlist com produtos adicionados")
     public void que_o_cliente_tem_uma_wishlist_com_produtos_adicionados() {
         Assertions.assertNotNull(testContext.getWishlistResponse().products());
@@ -114,10 +109,6 @@ public class StepDefinitions extends CucumberSpringConfiguration {
         testContext.setWishlistDetailResponse(parseResponseBodyToWishlistDetailResponse());
         Assertions.assertEquals(testContext.getWishlistDetailResponse().products().getFirst().getId(), productId);
     }
-
-    /*
-       Scenario: Consultar todos os produtos da Wishlist do cliente
-     */
 
     @Quando("o cliente consultar se o produto {string} está na sua wishlist")
     public void o_cliente_consultar_se_o_produto_esta_na_sua_wishlist(String productId) {
@@ -204,6 +195,23 @@ public class StepDefinitions extends CucumberSpringConfiguration {
         Assertions.assertEquals(response.getStatusCode().value(), statusCode);
     }
 
+
+    @Dado("que o cliente ja possui uma wishlist com {int} produtos")
+    public void que_o_cliente_ja_possui_uma_wishlist_com_produtos(Integer productsSize) {
+        createWishListWithProductsDirectlyInTheDataBase();
+        Assertions.assertEquals(this.wishListPreInsertResult.getProducts().size(), productsSize);
+    }
+
+    @Quando("ele tentar adicionar novamente um produto {string} a sua wishlist")
+    public void ele_tentar_adicionar_novamente_um_novo_produto_a_sua_wishlist(String productId) {
+        final String url = urlBase
+                .concat("/")
+                .concat(wishListPreInsertResult.getId())
+                .concat("/products");
+        response = testRestTemplate.postForEntity(url, new ProductRequest(productId), MessageExceptionResponse.class);
+    }
+
+
     private WishlistResponse parseResponseBodyToWishlistResponse() {
         assert response != null;
         WishlistResponse responseBody = (WishlistResponse) response.getBody();
@@ -223,5 +231,20 @@ public class StepDefinitions extends CucumberSpringConfiguration {
         MessageExceptionResponse responseBody = (MessageExceptionResponse) response.getBody();
         assert responseBody != null;
         return responseBody;
+    }
+
+    private void createWishListWithProductsDirectlyInTheDataBase() {
+        int productMockId = 0;
+        Wishlist wishlist = new Wishlist();
+        wishlist.setCustomerId("cliente1");
+        wishlist.setListName("List Test");
+        wishlist.setProducts(new ArrayList<>());
+
+        while (productMockId < 20) {
+            productMockId++;
+            wishlist.getProducts().add(new Product(String.valueOf(productMockId)));
+        }
+
+        this.wishListPreInsertResult = mongoTemplate.insert(wishlist, "wishlists");
     }
 }

@@ -49,6 +49,8 @@ public class WishlistController {
                             schema = @Schema(implementation = WishlistResponse.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "404", description = ExceptionMessage.WISHLIST_LIST_NOT_FOUND),
+            @ApiResponse(responseCode = "412", description = ExceptionMessage.WISHLIST_MAX_PRODUCTS),
+            @ApiResponse(responseCode = "412", description = ExceptionMessage.PRODUCT_ALREADY_EXISTS),
             @ApiResponse(responseCode = "412", description = ExceptionMessage.GENERIC_ERROR)
     })
     @PostMapping("/{wishlistId}/products")

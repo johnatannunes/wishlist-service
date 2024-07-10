@@ -45,3 +45,9 @@ Funcionalidade: Wishlist do Cliente
     Entao o http status deve ser 204
     E a wishlist não deve conter o produto "668a3cd79c5b9977c005c310"
     Entao o http status deve ser 404
+
+  Cenario: Limite máximo de produtos na Wishlist do cliente
+    Dado que o cliente ja possui uma wishlist com 20 produtos
+    Quando ele tentar adicionar novamente um produto "668e3684186c1d00ac08a63b" a sua wishlist
+    Entao a operação deve falhar devolvendo o http status: 412
+    E uma mensagem de validacao "Wishlist cannot have more than 20 products" deve ser retornada
