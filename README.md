@@ -186,7 +186,7 @@ This project utilizes various technologies that cover the following concepts and
 
 #### 13. **Agile Development and DevOps Practices**
 
-- **Maven and Gradle**: Build automation tools for compiling, testing, and packaging the application.
+- **Maven**: Build automation tools for compiling, testing, and packaging the application.
 
 - **Docker and Docker Compose**: Containerization and multi-service configuration for development and testing.
 
