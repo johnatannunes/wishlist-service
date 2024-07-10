@@ -265,7 +265,7 @@ Maven:
 ### Start the Docker Containers
 
 ```bash 
-docker-compose up -d
+cd wishlist_stack && sudo docker-compose up -d
 ```
 
 This command will start MongoDB, MockServer, Zookeeper, and Kafka services.
