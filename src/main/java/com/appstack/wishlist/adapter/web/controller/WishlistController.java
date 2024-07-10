@@ -53,7 +53,7 @@ public class WishlistController {
             @ApiResponse(responseCode = "412", description = ExceptionMessage.GENERIC_ERROR)
     })
     public ResponseEntity<WishlistResponse> addProductToWishlist(@PathVariable String wishlistId,
-                                                              @RequestBody @Valid ProductRequest product) {
+                                                                 @RequestBody @Valid ProductRequest product) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(addproductToWishlistUseCase.execute(wishlistId, product));
     }

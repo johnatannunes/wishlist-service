@@ -1,22 +1,23 @@
-Feature: Gestão de Wishlists
+Feature: Wishlist do Cliente
   Como um cliente
   Quero gerenciar minhas wishlists
   Para poder organizar meus produtos desejados
 
-  Scenario: Criar uma nova wishlist
-    When eu enviar uma solicitação para criar uma nova wishlist com os seguintes dados
-      | customerId               | listName       | privacyStatus |
-      | 668a3cd79c5b9977c005c306 | Minha Wishlist | PUBLIC        |
-    Then a resposta deve ter status 201 CREATED
-    And uma wishlist com customerId "668a3cd79c5b9977c005c306", nome da lista "Minha Wishlist" e status de privacidade "PUBLIC" deve ser retornada
+  Scenario: Criar uma Wishlist para um cliente
+  Given que o cliente com ID "668a3cd79c5b9977c005c306" ainda não possui uma wishlist criada
+  When o cliente solicita a criação de uma nova wishlist
+  Then uma nova wishlist deve ser criada para o cliente
+  And a wishlist deve estar vazia
+  And a wishlist deve pertencer ao cliente com ID "668a3cd79c5b9977c005c306"
 
-  Scenario: Remover um produto de uma wishlist
-    Given que eu tenho uma wishlist existente com ID "668b104f02b83a53c4290fc8" contendo o produto com ID "668a3c139c5b9977c005c198"
-    When eu enviar uma solicitação para remover o produto com ID "668a3c139c5b9977c005c198" da wishlist "668b104f02b83a53c4290fc8"
-    Then a resposta deve ter status 204 NO CONTENT
+  Scenario: Adicionar um produto na Wishlist do cliente
+  Given que o cliente tem uma wishlist
+  When ele adicionar o produto "668a3cd79c5b9977c005c310" à sua wishlist
+  Then o produto deve ser adicionado com sucesso à wishlist
+  And a wishlist deve conter o produto "668a3cd79c5b9977c005c310"
 
-  Scenario: Visualizar todas as wishlists de um cliente
-    Given que eu tenho wishlists existentes para o customerId "668a3cd79c5b9977c005c306"
-    When eu enviar uma solicitação para visualizar todas as minhas wishlists
-    Then a resposta deve ter status 200 OK
-    And todas as minhas wishlists devem ser retornadas
+  Scenario: Consultar todos os produtos da Wishlist do cliente
+  Given que o cliente tem uma wishlist com produtos adicionados"
+  And a wishlist contém produtos adicionados"
+  Quando ele consultar todos os produtos da sua wishlist
+  Então a resposta deve conter os produtos "productId1" e "productId2"
