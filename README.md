@@ -282,6 +282,16 @@ Maven
 ###### Swagger UI
 http://localhost:8080/swagger-ui/index.html#/
 
+# Mock Server API to List Products for Adding to the Wishlist
+#### This API will list all the mocked products on the MockServer running in Docker, so you can list the products and add them to the wishlist.
+
+```
+curl --location 'http://localhost:1080/products' \
+--header 'Content-Type: application/json' \
+--data '[]'
+```
+
+
 # License
 
 This project is licensed under the MIT License - see the https://opensource.org/license/mit for details.
