@@ -10,33 +10,52 @@ import com.appstack.wishlist.domain.enums.PrivacyStatusEnum;
 import com.appstack.wishlist.domain.model.Product;
 import com.appstack.wishlist.domain.model.Wishlist;
 import com.appstack.wishlist.exception.MessageExceptionResponse;
+import io.cucumber.java.AfterAll;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.E;
 import io.cucumber.java.pt.Entao;
 import io.cucumber.java.pt.Quando;
 import io.cucumber.spring.CucumberContextConfiguration;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @CucumberContextConfiguration
 public class StepDefinitions extends CucumberSpringConfiguration {
 
-    private final WishlistFeatureContext testContext;
+    private static WishlistFeatureContext testContext;
     private WishlistRequest wishlistRequest;
     private final String urlBase = "/wishlists";
     private ResponseEntity<?> response;
     private ProductRequest productRequest;
     private MessageExceptionResponse messageExceptionResponse;
-    private Wishlist wishListPreInsertResult;
+    private static Wishlist wishListPreInsertResult;
 
     public StepDefinitions(WishlistFeatureContext context, MongoTemplate mongoTemplate) {
-        this.testContext = context;
+        testContext = context;
         CucumberSpringConfiguration.mongoTemplate = mongoTemplate;
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        var idsToRemove = List.of(testContext.getWishlistResponse().id(), wishListPreInsertResult.getId());
+
+        idsToRemove.forEach(id -> {
+            mongoTemplate.findAllAndRemove(Query
+                            .query(Criteria.where("_id")
+                                    .is(new ObjectId(id))),
+                    Wishlist.class);
+        });
+
+
     }
 
     @Dado("que o cliente com ID {string} ainda não possui uma wishlist criada")
