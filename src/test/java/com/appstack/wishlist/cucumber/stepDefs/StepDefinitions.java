@@ -48,12 +48,10 @@ public class StepDefinitions extends CucumberSpringConfiguration {
     public static void tearDown() {
         var idsToRemove = List.of(testContext.getWishlistResponse().id(), wishListPreInsertResult.getId());
 
-        idsToRemove.forEach(id -> {
-            mongoTemplate.findAllAndRemove(Query
-                            .query(Criteria.where("_id")
-                                    .is(new ObjectId(id))),
-                    Wishlist.class);
-        });
+        idsToRemove.forEach(id -> mongoTemplate.findAllAndRemove(Query
+                        .query(Criteria.where("_id")
+                                .is(new ObjectId(id))),
+                Wishlist.class));
 
 
     }
@@ -218,7 +216,7 @@ public class StepDefinitions extends CucumberSpringConfiguration {
     @Dado("que o cliente ja possui uma wishlist com {int} produtos")
     public void que_o_cliente_ja_possui_uma_wishlist_com_produtos(Integer productsSize) {
         createWishListWithProductsDirectlyInTheDataBase();
-        Assertions.assertEquals(this.wishListPreInsertResult.getProducts().size(), productsSize);
+        Assertions.assertEquals(wishListPreInsertResult.getProducts().size(), productsSize);
     }
 
     @Quando("ele tentar adicionar novamente um produto {string} a sua wishlist")
@@ -264,6 +262,6 @@ public class StepDefinitions extends CucumberSpringConfiguration {
             wishlist.getProducts().add(new Product(String.valueOf(productMockId)));
         }
 
-        this.wishListPreInsertResult = mongoTemplate.insert(wishlist, "wishlists");
+        wishListPreInsertResult = mongoTemplate.insert(wishlist, "wishlists");
     }
 }
