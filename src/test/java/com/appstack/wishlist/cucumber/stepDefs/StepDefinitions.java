@@ -7,15 +7,16 @@ import com.appstack.wishlist.adapter.web.controller.dto.WishlistResponse;
 import com.appstack.wishlist.cucumber.CucumberSpringConfiguration;
 import com.appstack.wishlist.cucumber.context.WishlistFeatureContext;
 import com.appstack.wishlist.domain.enums.PrivacyStatusEnum;
+import com.appstack.wishlist.exception.MessageExceptionResponse;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.E;
 import io.cucumber.java.pt.Entao;
 import io.cucumber.java.pt.Quando;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.junit.jupiter.api.Assertions;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-
-import java.util.ArrayList;
 
 @CucumberContextConfiguration
 public class StepDefinitions extends CucumberSpringConfiguration {
@@ -25,6 +26,7 @@ public class StepDefinitions extends CucumberSpringConfiguration {
     private final String urlBase = "/wishlists";
     private ResponseEntity<?> response;
     private ProductRequest productRequest;
+    private MessageExceptionResponse messageExceptionResponse;
 
     public StepDefinitions(WishlistFeatureContext context) {
         this.testContext = context;
@@ -79,13 +81,12 @@ public class StepDefinitions extends CucumberSpringConfiguration {
         final String url = urlBase
                 .concat("/")
                 .concat(testContext.getWishlistResponse().id())
-                .concat("/")
-                .concat("products");
+                .concat("/products");
         response = testRestTemplate.postForEntity(url, productRequest, WishlistResponse.class);
     }
 
-    @E("a wishlist deve conter o produto {string}")
-    public void a_wishlist_deve_conter_o_produto(String productId) {
+    @E("a wishlist contem o produto {string}")
+    public void a_wishlist_contem_o_produto(String productId) {
         testContext.setWishlistResponse(parseResponseBodyToWishlistResponse());
         Assertions.assertNotNull(testContext.getWishlistResponse().products());
         Assertions.assertEquals(testContext.getWishlistResponse().products().getFirst().id(), productId);
@@ -111,7 +112,96 @@ public class StepDefinitions extends CucumberSpringConfiguration {
     @Entao("a resposta deve conter o produto {string} adicionado")
     public void a_resposta_deve_conter_o_produto_adicionado(String productId) {
         testContext.setWishlistDetailResponse(parseResponseBodyToWishlistDetailResponse());
-        Assertions.assertEquals(testContext.getWishlistResponse().products().getFirst().id(), productId);
+        Assertions.assertEquals(testContext.getWishlistDetailResponse().products().getFirst().getId(), productId);
+    }
+
+    /*
+       Scenario: Consultar todos os produtos da Wishlist do cliente
+     */
+
+    @Quando("o cliente consultar se o produto {string} está na sua wishlist")
+    public void o_cliente_consultar_se_o_produto_esta_na_sua_wishlist(String productId) {
+        final String url = urlBase
+                .concat("/")
+                .concat(testContext.getWishlistResponse().id())
+                .concat("/products/")
+                .concat(productId);
+        response = testRestTemplate.getForEntity(url, WishlistDetailResponse.class);
+    }
+
+    @Entao("a resposta deve indicar que o produto {string} está na wishlist")
+    public void a_resposta_deve_indicar_que_o_produto_esta_na_wishlist(String productId) {
+        testContext.setWishlistDetailResponse(parseResponseBodyToWishlistDetailResponse());
+        Assertions.assertEquals(testContext.getWishlistDetailResponse().products().getFirst().getId(), productId);
+    }
+
+    @Entao("apenas {int} produto foi retornado")
+    public void apenas_foi_produto_retornado(Integer size) {
+        Assertions.assertEquals(testContext.getWishlistResponse().products().size(), size);
+    }
+
+    @Quando("ele tentar adicionar o produto {string} novamente à sua wishlist")
+    public void ele_tentar_adicionar_o_produto_novamente_a_sua_wishlist(String productId) {
+        final String url = urlBase
+                .concat("/")
+                .concat(testContext.getWishlistResponse().id())
+                .concat("/")
+                .concat("products");
+        response = testRestTemplate.postForEntity(url, new ProductRequest(productId), MessageExceptionResponse.class);
+
+    }
+
+    @Entao("a operação deve falhar devolvendo o http status: {int}")
+    public void a_operacao_deve_falhar_devolvendo_o_http_status(Integer statusCode) {
+        Assertions.assertEquals(response.getStatusCode().value(), statusCode);
+        messageExceptionResponse = parseResponseBodyToMessageExceptionResponse();
+    }
+
+    @E("uma mensagem de validacao {string} deve ser retornada")
+    public void uma_mensagem_de_validacao_deve_ser_retornada(String msg) {
+        Assertions.assertEquals(messageExceptionResponse.getMessage(), msg);
+    }
+
+    @Quando("o cliente tentar adicionar um produto {string} a uma wishlist inexistente com ID {string}")
+    public void o_cliente_tentar_adicionar_um_produto_a_uma_wishlist_inexistente_com_id(String productId,
+                                                                                        String wishlistId) {
+
+        final String url = urlBase
+                .concat("/")
+                .concat(wishlistId)
+                .concat("/products");
+        response = testRestTemplate.postForEntity(url, new ProductRequest(productId), MessageExceptionResponse.class);
+    }
+
+    @Quando("ele remover o produto {string} da sua wishlist")
+    public void ele_remover_o_produto_da_sua_wishlist(String productId) {
+        HttpEntity<Void> requestEntity = new HttpEntity<>(null);
+        response = testRestTemplate.exchange(
+                urlBase.concat("/")
+                        .concat(testContext.getWishlistResponse().id())
+                        .concat("/products/")
+                        .concat(productId),
+                HttpMethod.DELETE,
+                requestEntity,
+                Void.class
+        );
+    }
+
+    @E("a wishlist não deve conter o produto {string}")
+    public void a_wishlist_nao_deve_conter_o_produto(String productId) {
+        final String url = urlBase
+                .concat("/")
+                .concat(testContext.getWishlistResponse().id())
+                .concat("/products/")
+                .concat(productId);
+        response = testRestTemplate.getForEntity(url, WishlistDetailResponse.class);
+        WishlistDetailResponse wishlistDetailResponse = parseResponseBodyToWishlistDetailResponse();
+        Assertions.assertNull(wishlistDetailResponse.id());
+    }
+
+    @Entao("o http status deve ser {int}")
+    public void o_http_status_deve_ser(Integer statusCode) {
+        Assertions.assertEquals(response.getStatusCode().value(), statusCode);
     }
 
     private WishlistResponse parseResponseBodyToWishlistResponse() {
@@ -124,6 +214,13 @@ public class StepDefinitions extends CucumberSpringConfiguration {
     private WishlistDetailResponse parseResponseBodyToWishlistDetailResponse() {
         assert response != null;
         WishlistDetailResponse responseBody = (WishlistDetailResponse) response.getBody();
+        assert responseBody != null;
+        return responseBody;
+    }
+
+    private MessageExceptionResponse parseResponseBodyToMessageExceptionResponse() {
+        assert response != null;
+        MessageExceptionResponse responseBody = (MessageExceptionResponse) response.getBody();
         assert responseBody != null;
         return responseBody;
     }

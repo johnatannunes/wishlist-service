@@ -9,5 +9,6 @@ public final class ExceptionMessage {
     public static final String NO_WISHLIST_FOR_CUSTOMER = "No wishlist found for this customer";
     public static final String PRODUCT_ALREADY_EXISTS = "Product already exists in wishlist";
     public static final String PRODUCT_IN_WISHLIST_NOT_FOUND = "Wishlist or product not found";
-    public static final String GENERIC_ERROR = "Something went wrong. Please try again or contact support if the issue persists.";
+    public static final String GENERIC_ERROR = "Something went wrong. Please try again or contact support if " +
+            "the issue persists.";
 }

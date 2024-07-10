@@ -42,7 +42,6 @@ public class WishlistController {
                 .body(createWishlistUseCase.execute(wishlistRequest));
     }
 
-    @PostMapping("/{wishlistId}/products")
     @Operation(summary = "Add a product to a wishlist", description = "Adds a product to an existing wishlist.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product added successfully",
@@ -52,13 +51,13 @@ public class WishlistController {
             @ApiResponse(responseCode = "404", description = ExceptionMessage.WISHLIST_LIST_NOT_FOUND),
             @ApiResponse(responseCode = "412", description = ExceptionMessage.GENERIC_ERROR)
     })
+    @PostMapping("/{wishlistId}/products")
     public ResponseEntity<WishlistResponse> addProductToWishlist(@PathVariable String wishlistId,
                                                                  @RequestBody @Valid ProductRequest product) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(addproductToWishlistUseCase.execute(wishlistId, product));
     }
 
-    @DeleteMapping("/{wishlistId}/products/{productId}")
     @Operation(summary = "Remove a product from a wishlist",
             description = "Removes a product from an existing wishlist.")
     @ApiResponses(value = {
@@ -66,6 +65,7 @@ public class WishlistController {
             @ApiResponse(responseCode = "404", description = ExceptionMessage.PRODUCT_IN_WISHLIST_NOT_FOUND),
             @ApiResponse(responseCode = "412", description = ExceptionMessage.GENERIC_ERROR)
     })
+    @DeleteMapping("/{wishlistId}/products/{productId}")
     public ResponseEntity<Void> removeProductFromWishlist(@PathVariable String wishlistId,
                                                           @PathVariable String productId) {
         removeProductFromWishlistUseCase.execute(wishlistId, productId);
@@ -87,7 +87,6 @@ public class WishlistController {
                 .body(viewWishlistUseCase.execute(customerId));
     }
 
-    @GetMapping("/{wishlistId}")
     @Operation(summary = "View a single wishlist", description = "Retrieves a single wishlist by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the wishlist",
@@ -96,6 +95,7 @@ public class WishlistController {
             @ApiResponse(responseCode = "404", description = ExceptionMessage.WISHLIST_LIST_NOT_FOUND),
             @ApiResponse(responseCode = "412", description = ExceptionMessage.GENERIC_ERROR)
     })
+    @GetMapping("/{wishlistId}")
     public ResponseEntity<WishlistDetailResponse> viewSingleWishlists(@PathVariable String wishlistId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(viewSingleWishlistUseCase.execute(wishlistId));
