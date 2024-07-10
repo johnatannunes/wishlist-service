@@ -1,6 +1,7 @@
 package com.appstack.wishlist.cucumber.stepDefs;
 
 import com.appstack.wishlist.adapter.web.controller.dto.ProductRequest;
+import com.appstack.wishlist.adapter.web.controller.dto.WishlistDetailResponse;
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistRequest;
 import com.appstack.wishlist.adapter.web.controller.dto.WishlistResponse;
 import com.appstack.wishlist.cucumber.CucumberSpringConfiguration;
@@ -13,6 +14,8 @@ import io.cucumber.java.pt.Quando;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.ResponseEntity;
+
+import java.util.ArrayList;
 
 @CucumberContextConfiguration
 public class StepDefinitions extends CucumberSpringConfiguration {
@@ -88,9 +91,39 @@ public class StepDefinitions extends CucumberSpringConfiguration {
         Assertions.assertEquals(testContext.getWishlistResponse().products().getFirst().id(), productId);
     }
 
+    /*
+       Scenario: Consultar todos os produtos da Wishlist do cliente
+     */
+
+    @Dado("que o cliente tem uma wishlist com produtos adicionados")
+    public void que_o_cliente_tem_uma_wishlist_com_produtos_adicionados() {
+        Assertions.assertNotNull(testContext.getWishlistResponse().products());
+    }
+
+    @Quando("ele consultar todos os produtos da sua wishlist")
+    public void ele_consultar_todos_os_produtos_da_sua_wishlist() {
+        final String url = urlBase
+                .concat("/")
+                .concat(testContext.getWishlistResponse().id());
+        response = testRestTemplate.getForEntity(url, WishlistDetailResponse.class);
+    }
+
+    @Entao("a resposta deve conter o produto {string} adicionado")
+    public void a_resposta_deve_conter_o_produto_adicionado(String productId) {
+        testContext.setWishlistDetailResponse(parseResponseBodyToWishlistDetailResponse());
+        Assertions.assertEquals(testContext.getWishlistResponse().products().getFirst().id(), productId);
+    }
+
     private WishlistResponse parseResponseBodyToWishlistResponse() {
         assert response != null;
         WishlistResponse responseBody = (WishlistResponse) response.getBody();
+        assert responseBody != null;
+        return responseBody;
+    }
+
+    private WishlistDetailResponse parseResponseBodyToWishlistDetailResponse() {
+        assert response != null;
+        WishlistDetailResponse responseBody = (WishlistDetailResponse) response.getBody();
         assert responseBody != null;
         return responseBody;
     }

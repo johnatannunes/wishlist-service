@@ -17,7 +17,6 @@ Feature: Wishlist do Cliente
   And a wishlist deve conter o produto "668a3cd79c5b9977c005c310"
 
   Scenario: Consultar todos os produtos da Wishlist do cliente
-  Given que o cliente tem uma wishlist com produtos adicionados"
-  And a wishlist contém produtos adicionados"
-  Quando ele consultar todos os produtos da sua wishlist
-  Então a resposta deve conter os produtos "productId1" e "productId2"
+  Given que o cliente tem uma wishlist com produtos adicionados
+  When ele consultar todos os produtos da sua wishlist
+  Then a resposta deve conter o produto "668a3cd79c5b9977c005c310" adicionado
