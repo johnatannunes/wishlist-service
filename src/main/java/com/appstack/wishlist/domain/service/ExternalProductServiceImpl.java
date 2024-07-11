@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +44,9 @@ public class ExternalProductServiceImpl implements ExternalProductService {
                             "getProductsByIds", productIds.toString());
 
             ExternalProduct[] externalProducts = externalProductRepository.getProductsByIds(new ArrayList<>(productIds));
+            if (ObjectUtils.isEmpty(externalProducts)) {
+                return new ArrayList<>();
+            }
             sendMessageToExternalProductTopic(externalProducts);
             return Arrays.stream(externalProducts).toList();
         }catch (Exception e){
