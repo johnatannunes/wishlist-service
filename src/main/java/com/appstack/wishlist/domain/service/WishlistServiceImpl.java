@@ -169,7 +169,8 @@ public class WishlistServiceImpl implements WishlistService {
         boolean productExists = wishlist.getProducts()
                 .stream()
                 .anyMatch(productInList
-                        -> Objects.equals(product.getId(), productInList.getId()));
+                        -> Objects.equals(product.getId(),
+                        productInList.getId()));
 
         if (productExists) {
             throw new PreconditionFailedException(ExceptionMessage.PRODUCT_ALREADY_EXISTS);
