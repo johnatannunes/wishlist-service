@@ -259,7 +259,7 @@ cd wishlist-sercive
 Maven:
 
 ```bash 
-./mvnw clean install
+mvn clean install
 ```
 
 ### Start the Docker Containers
@@ -275,7 +275,7 @@ This command will start MongoDB, MockServer, Zookeeper, and Kafka services.
 Maven
 
 ```bash 
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
 
 ### API Endpoints Documentation 
